@@ -10,5 +10,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>hdfs</module>
+        <module>youtube_etl</module>
     </modules>
 </project>
