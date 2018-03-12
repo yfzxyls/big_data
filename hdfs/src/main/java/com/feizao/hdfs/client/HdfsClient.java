@@ -1,4 +1,4 @@
-package com.feizao.hdfs;
+package com.feizao.hdfs.client;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;

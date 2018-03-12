@@ -34,4 +34,22 @@
         <name>yarn.log-aggregation.retain-seconds</name>
         <value>604800</value>
     </property>
+
+    <!--java.lang.OutOfMemoryError: Java heap space-->
+    <property>
+        <name>yarn.scheduler.maximum-allocation-mb</name>
+        <value>2048</value>
+    </property>
+    <property>
+        <name>yarn.scheduler.minimum-allocation-mb</name>
+        <value>2048</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.vmem-pmem-ratio</name>
+        <value>2.1</value>
+    </property>
+    <property>
+        <name>mapred.child.java.opts</name>
+        <value>-Xmx1024m</value>
+    </property>
 </configuration>
