@@ -11,5 +11,6 @@
     <modules>
         <module>hdfs</module>
         <module>youtube_etl</module>
+        <module>kafka</module>
     </modules>
 </project>
