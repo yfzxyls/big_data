@@ -1,5 +1,6 @@
 package com.feizao.hdfs.mapreduce;
 
+import com.feizao.hdfs.utils.Tools;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;

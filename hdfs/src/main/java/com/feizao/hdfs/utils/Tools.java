@@ -1,4 +1,4 @@
-package com.feizao.hdfs.mapreduce;
+package com.feizao.hdfs.utils;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
