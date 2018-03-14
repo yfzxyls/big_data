@@ -1,7 +1,7 @@
 package com.soap.hdfs.writable;
 
 import com.soap.hdfs.utils.Tools;
-import javafx.scene.text.Text;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 
 import java.io.IOException;
@@ -21,9 +21,9 @@ public class FlowRunner {
             Tools.setReduce(job, FlowReducer.class, Text.class, FlowBean.class);
             job.setReducerClass(FlowReducer.class);
 
-            Tools.setInput(job, "C:\\Users\\yangf\\Desktop\\phone_data.txt");
+            Tools.setInput(job, "/writable");
 
-            Tools.setOutPut(job, "C:\\Users\\yangf\\Desktop\\flow_output");
+            Tools.setOutPut(job, "/flow_output/writable");
             boolean status = job.waitForCompletion(true);
 
             System.exit(status == true ? 0 : 1);

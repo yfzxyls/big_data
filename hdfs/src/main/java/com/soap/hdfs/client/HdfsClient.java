@@ -22,7 +22,7 @@ public class HdfsClient {
     public void getConf() throws Exception {
         Configuration conf = new Configuration();
         //conf.set("dfs.replication", "2");
-        fs = FileSystem.get(new URI("hdfs://hadoop100:9000"), conf, "hadoop");
+        fs = FileSystem.get(new URI("hdfs://hadoop200:9000"), conf, "hadoop");
     }
 
     /**
@@ -49,8 +49,8 @@ public class HdfsClient {
     @Test
     public void copyFromLocalToFile() throws IOException {
         fs.copyFromLocalFile(
-                new Path("C:\\Users\\yangf\\Downloads\\upload"),
-                new Path("/user/client/test/upload1.txt"));
+                new Path("C:\\Users\\yangf\\Desktop\\phone_data.txt"),
+                new Path("/writable"));
     }
 
     /**
@@ -99,7 +99,7 @@ public class HdfsClient {
 
     @Test
     public void testDeleteFile() throws IOException{
-         fs.deleteOnExit(new Path("/user/client/test/upload1.txt"));
+         fs.deleteOnExit(new Path("/flow_output/writable.txt"));
     }
 
     /**

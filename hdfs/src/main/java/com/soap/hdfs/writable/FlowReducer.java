@@ -1,5 +1,6 @@
 package com.soap.hdfs.writable;
 
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -8,7 +9,7 @@ import java.io.IOException;
 /**
  * Created by yangf on 2018/3/12.
  */
-public class FlowReducer extends Reducer<Text, FlowBean, Text, FlowBean> {
+public class FlowReducer extends Reducer<Text, FlowBean, Text, LongWritable> {
 
 
     @Override
@@ -21,6 +22,6 @@ public class FlowReducer extends Reducer<Text, FlowBean, Text, FlowBean> {
             sum_downFlow += flowBean.getDownFlow();
         }
         FlowBean resultBean = new FlowBean(sum_upFlow, sum_downFlow);
-        context.write(key, resultBean);
+        context.write(key, new LongWritable(resultBean.getSumFlow()));
     }
 }

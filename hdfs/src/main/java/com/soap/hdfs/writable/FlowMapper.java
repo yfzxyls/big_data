@@ -13,7 +13,7 @@ public class FlowMapper extends Mapper<LongWritable, Text, Text, FlowBean> {
 
     private Text key = new Text();
 
-    private FlowBean flowBean = null;
+    private FlowBean flowBean = new FlowBean();
 
 
     @Override
