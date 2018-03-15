@@ -1,5 +1,6 @@
 package com.soap.hdfs.writable;
 
+import com.soap.hdfs.partition.ProvincePartitioner;
 import com.soap.hdfs.utils.Tools;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -19,13 +20,14 @@ public class FlowRunner {
 
             Tools.setMapper(job, FlowMapper.class, Text.class, FlowBean.class);
             Tools.setReduce(job, FlowReducer.class, Text.class, FlowBean.class);
-            job.setReducerClass(FlowReducer.class);
-
-            Tools.setInput(job, "/writable");
-
-            Tools.setOutPut(job, "/flow_output/writable");
+            Tools.setInput(job, "D:\\study\\data\\input\\phone_data.txt");
+            //指定合并文件
+//            Tools.setInputFormatAndSplitSize(job,CombineTextInputFormat.class,4194304,2097152);
+//            Tools.setInputKeyValueFormat(job, KeyValueTextInputFormat.class,"-->");
+            Tools.setOutput(job, "D:\\study\\data\\output");
+            //自定义分区
+            Tools.setPartition(job, ProvincePartitioner.class, 5);
             boolean status = job.waitForCompletion(true);
-
             System.exit(status == true ? 0 : 1);
         } catch (IOException e) {
             e.printStackTrace();

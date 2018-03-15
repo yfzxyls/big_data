@@ -18,9 +18,8 @@ public class FlowMapper extends Mapper<LongWritable, Text, Text, FlowBean> {
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+
         String[] fields = value.toString().split("\t");
-
-
         // 取出手机号码
         String phoneNum = fields[1];
         // 取出上行流量和下行流量
