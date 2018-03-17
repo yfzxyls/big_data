@@ -1,6 +1,5 @@
 package com.soap.hdfs.writable;
 
-import com.soap.hdfs.partition.ProvincePartitioner;
 import com.soap.hdfs.utils.Tools;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -26,7 +25,7 @@ public class FlowRunner {
 //            Tools.setInputKeyValueFormat(job, KeyValueTextInputFormat.class,"-->");
             Tools.setOutput(job, "D:\\study\\data\\output");
             //自定义分区
-            Tools.setPartition(job, ProvincePartitioner.class, 5);
+//            Tools.setPartition(job, ProvincePartitioner.class, 5);
             boolean status = job.waitForCompletion(true);
             System.exit(status == true ? 0 : 1);
         } catch (IOException e) {

@@ -19,13 +19,10 @@ public class OrderSortRunner {
 
             Tools.setInput(job, "D:\\study\\data\\input\\GroupingComparator.txt");
             Tools.setOutput(job, "D:\\study\\data\\output\\GroupingComparator2");
-
             // 10 设置reduce端的分组
             job.setGroupingComparatorClass(OrderGroupingComparator.class);
-
             // 7 设置分区
             job.setPartitionerClass(OrderPartitioner.class);
-
             // 8 设置reduce个数
             job.setNumReduceTasks(3);
             System.out.println(job.waitForCompletion(true));

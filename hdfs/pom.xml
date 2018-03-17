@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.soap.study</groupId>
+        <groupId>com.soap</groupId>
         <artifactId>big_data</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.soap.study</groupId>
+    <groupId>com.soap</groupId>
     <artifactId>hdfs</artifactId>
     <version>1.0-SNAPSHOT</version>
     
