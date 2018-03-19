@@ -192,8 +192,6 @@ public class WeiboService {
             deleteList.add(delete);
         }
         HBaseUtil.deleteByDeletes(conf, WeiboTableConstant.WEIBO_INBOX, deleteList);
-        Arrays.sort();
-
     }
 
     private List<String> getConentRowKeys(String uid, String[] attends) {
