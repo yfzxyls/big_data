@@ -17,10 +17,7 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by yangf on 2018/3/17.
@@ -85,6 +82,10 @@ public class WeiboService {
                     Bytes.toBytes(uid), Bytes.toBytes(contentRowkey));
             puts.add(put);
         }
+        Put put = new Put(Bytes.toBytes(uid)).addColumn(Bytes.toBytes(WeiboTableConstant.WEIBO_INBOX_INFO)
+                ,Bytes.toBytes(uid), Bytes.toBytes(contentRowkey));
+        puts.add(put);
+        
         HBaseUtil.addByPutList(conf,
                 WeiboTableConstant.WEIBO_INBOX,
                 puts);
@@ -191,6 +192,7 @@ public class WeiboService {
             deleteList.add(delete);
         }
         HBaseUtil.deleteByDeletes(conf, WeiboTableConstant.WEIBO_INBOX, deleteList);
+        Arrays.sort();
 
     }
 
@@ -221,21 +223,21 @@ public class WeiboService {
         Map<String, String> contentRowkeys = HBaseUtil.getRowMultiColumns(conf,
                 WeiboTableConstant.WEIBO_INBOX,
                 uid,
-                WeiboTableConstant.WEIBO_INBOX_INFO, null);
+                null, null);
         List<Get> gets = new ArrayList<>();
-        for (Map.Entry<String,String> contentRowkey : contentRowkeys.entrySet()) {
-             Get get = new Get(Bytes.toBytes(contentRowkey.getValue()));
-             gets.add(get);
+        for (Map.Entry<String, String> contentRowkey : contentRowkeys.entrySet()) {
+            Get get = new Get(Bytes.toBytes(contentRowkey.getValue()));
+            gets.add(get);
         }
         Map<String, Map<String, String>> results = HBaseUtil.getRowByGets(conf, WeiboTableConstant.WEIBO_CONTENT, gets);
         List<MessageVo> messageVos = new ArrayList<>();
         if (results == null || results.size() <= 0) return messageVos;
-        for (Map.Entry<String, Map<String, String>> result : results.entrySet()){
-            MessageVo messageVo = new MessageVo() ;
+        for (Map.Entry<String, Map<String, String>> result : results.entrySet()) {
+            MessageVo messageVo = new MessageVo();
             String rowKey = result.getKey();
             messageVo.setRowKey(rowKey);
-            messageVo.setUid(rowKey.substring(0,rowKey.indexOf("_")));
-            messageVo.setPubDate(new DateTime(rowKey.substring(rowKey.indexOf("_"))).toString("yyyy-MM-dd HH;mm:ss"));
+            messageVo.setUid(rowKey.substring(0, rowKey.indexOf("_")));
+            messageVo.setPubDate(new DateTime(Long.valueOf(rowKey.substring(rowKey.indexOf("_") + 1))).toString("yyyy-MM-dd HH:mm:ss"));
             messageVo.setContent(result.getValue().get(WeiboTableConstant.WEIBO_CONTENT_COLUMN_FAMILY));
             messageVos.add(messageVo);
         }
