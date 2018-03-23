@@ -14,5 +14,6 @@
         <module>kafka</module>
         <module>hbase</module>
         <module>weibo</module>
+        <module>zookeeper</module>
     </modules>
 </project>

@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 
@@ -17,20 +18,37 @@ import java.util.*;
 public class HBaseUtil {
 
 
+    /**
+     * 判断表是否存在
+     *
+     * @param conf
+     * @param tableName
+     * @return
+     */
     public static boolean isTableExist(Configuration conf, String tableName) {
+        Admin admin = null;
         try {
             //API过时
 //            HBaseAdmin admin = new HBaseAdmin(conf);
 //            return admin.tableExists(tableName.getBytes());
             //Admin admin = connection.getAdmin();
-            Admin admin = ConnectionFactory.createConnection(conf).getAdmin();
+            admin = ConnectionFactory.createConnection(conf).getAdmin();
             return admin.tableExists(TableName.valueOf(tableName));
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            close(admin);
         }
         return false;
     }
 
+    /**
+     * 创建命名空间
+     *
+     * @param conf
+     * @param namseSpace
+     * @return
+     */
     public static boolean createNameSpace(Configuration conf, String namseSpace) {
         Admin admin = null;
         try {
@@ -52,6 +70,8 @@ public class HBaseUtil {
     }
 
     /**
+     * 创建表
+     *
      * @param conf
      * @param tableName    表名不能重复  表存在将抛出异常
      * @param columnFamily 列族必须有
@@ -79,6 +99,14 @@ public class HBaseUtil {
         }
     }
 
+    /**
+     * 清空表数据 自动disable
+     *
+     * @param conf
+     * @param tableName
+     * @param preserveSplits
+     * @return
+     */
     public static boolean truncateTable(Configuration conf, String tableName, boolean preserveSplits) {
         try {
             Admin admin = ConnectionFactory.createConnection(conf).getAdmin();
@@ -94,7 +122,7 @@ public class HBaseUtil {
     }
 
     /**
-     * 删除表
+     * 删除表 删除前先 disable , 或者强制删除
      *
      * @param conf
      * @param tableName
@@ -122,6 +150,20 @@ public class HBaseUtil {
         return true;
     }
 
+    public static boolean dropNamespace(Configuration conf, String namespace) {
+        Admin admin = null;
+        try {
+            admin = ConnectionFactory.createConnection(conf).getAdmin();
+            admin.deleteNamespace(namespace);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+           close(admin);
+        }
+        return true;
+    }
+
     /**
      * 添加一行数据
      *
@@ -140,7 +182,6 @@ public class HBaseUtil {
             Put put = new Put(Bytes.toBytes(rowkey));
             put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(columnName), Bytes.toBytes(vaule));
             table.put(put);
-            table.close();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -185,6 +226,14 @@ public class HBaseUtil {
         }
     }
 
+    /**
+     * 根据put集合添加数据
+     *
+     * @param conf
+     * @param tableName
+     * @param puts
+     * @return
+     */
     public static boolean addByPutList(Configuration conf, String tableName, List<Put> puts) {
         if (CollectionUtils.isEmpty(puts)) return true;
         Table table = null;
@@ -195,25 +244,13 @@ public class HBaseUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            closeTable(table);
+            close(table);
         }
         return false;
     }
 
-    public static void closeTable(AutoCloseable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
     /**
      * 添加多个rowKey 的多列数据
-     *
      * @param conf
      * @param tableName
      * @param rowInfo
@@ -239,6 +276,7 @@ public class HBaseUtil {
         return false;
     }
 
+
     private static void generaterMuilt(Map<String, Map<String, Map<String, String>>> rowInfo, List<Put> puts) {
         for (Map.Entry<String, Map<String, Map<String, String>>> outEntry : rowInfo.entrySet()) {
             Put put = new Put(Bytes.toBytes(outEntry.getKey()));
@@ -255,7 +293,6 @@ public class HBaseUtil {
 
     /**
      * 根据 rowKey 删除整条数据
-     *
      * @param conf
      * @param tableName
      * @param rowKey
@@ -265,10 +302,8 @@ public class HBaseUtil {
         return deleteMultiRow(conf, tableName, rowKey, null, null);
     }
 
-
     /**
      * 删除多行
-     *
      * @param conf
      * @param tableName
      * @param rowKey
@@ -289,14 +324,11 @@ public class HBaseUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                table.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            close(table);
         }
         return false;
     }
+
 
     /**
      * 删除rowKey 的指定多列
@@ -323,11 +355,7 @@ public class HBaseUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                table.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            close(table);
         }
         return false;
     }
@@ -348,15 +376,10 @@ public class HBaseUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                table.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            close(table);
         }
         return false;
     }
-
 
     /**
      * 根据delete集合删除
@@ -372,9 +395,10 @@ public class HBaseUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            closeTable(table);
+            close(table);
         }
     }
+
 
     /**
      * 根据rowKey 查询所有列信息 返回Map
@@ -385,11 +409,10 @@ public class HBaseUtil {
      * @return
      */
     public static Map<String, String> getRow(Configuration conf, String tableName, String rowKey) {
-        return getRowMultiColumns(conf, tableName, rowKey, null);
+        return getRowMultiColumns(conf, tableName, rowKey, null, 0);
     }
 
-
-    public static Map<String, String> getRowMultiColumns(Configuration conf, String tableName, String rowKey, String columnFamily, String... column) {
+    public static Map<String, String> getRowMultiColumns(Configuration conf, String tableName, String rowKey, String columnFamily, int maxVersion, String... column) {
         Table table = null;
         try {
             table = ConnectionFactory.createConnection(conf).getTable(TableName.valueOf(tableName));
@@ -401,6 +424,7 @@ public class HBaseUtil {
             } else if (!StringUtils.isBlank(columnFamily)) {
                 get.addColumn(Bytes.toBytes(columnFamily), null);
             }
+            if (maxVersion > 0) get.setMaxVersions(maxVersion);
             Result result = table.get(get);
             String row = Bytes.toString(result.getRow());
             if (StringUtils.isBlank(row)) {
@@ -423,6 +447,7 @@ public class HBaseUtil {
         }
         return null;
     }
+
 
     /**
      * 根据scan集合查找rowkey
@@ -452,11 +477,10 @@ public class HBaseUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            closeTable(table);
+            close(table);
         }
         return new ArrayList<>(rowkeys);
     }
-
 
     public static Map<String, Map<String, String>> getRowByGets(Configuration conf, String tableName, List<Get> gets) {
         Map<String, Map<String, String>> resultMap = null;
@@ -476,7 +500,7 @@ public class HBaseUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            closeTable(table);
+            close(table);
         }
         return resultMap;
 
@@ -500,7 +524,7 @@ public class HBaseUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            closeTable(table);
+            close(table);
         }
         return null;
     }
@@ -518,7 +542,20 @@ public class HBaseUtil {
         return rows;
     }
 
+
     public static Map<String, Map<String, String>> scanner(Configuration conf, String tableName, int maxVersion) {
         return scannerByColumn(conf, tableName, null, maxVersion, null);
+    }
+
+    public static void close(Closeable... closeables) {
+        for (Closeable closeable : closeables) {
+            if (null != closeable) {
+                try {
+                    closeable.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

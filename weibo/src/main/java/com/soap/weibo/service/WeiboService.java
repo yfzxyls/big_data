@@ -74,7 +74,7 @@ public class WeiboService {
         Map<String, String> fansUids = HBaseUtil.getRowMultiColumns(conf,
                 WeiboTableConstant.WEIBO_RELATION,
                 uid,
-                WeiboTableConstant.WEIBO_RELATION_COLUMN_FAMILY_FANS);
+                WeiboTableConstant.WEIBO_RELATION_COLUMN_FAMILY_FANS,0);
         List<Put> puts = new ArrayList<>();
         for (Map.Entry<String, String> fansUid : fansUids.entrySet()) {
             Put put = new Put(Bytes.toBytes(fansUid.getKey()));
@@ -152,7 +152,7 @@ public class WeiboService {
         Map<String, String> fansUids = HBaseUtil.getRowMultiColumns(conf,
                 WeiboTableConstant.WEIBO_RELATION,
                 uid,
-                WeiboTableConstant.WEIBO_RELATION_COLUMN_FAMILY_FANS,
+                WeiboTableConstant.WEIBO_RELATION_COLUMN_FAMILY_FANS,0,
                 null);
 
         List<Delete> deletes = new ArrayList<>();
@@ -221,7 +221,7 @@ public class WeiboService {
         Map<String, String> contentRowkeys = HBaseUtil.getRowMultiColumns(conf,
                 WeiboTableConstant.WEIBO_INBOX,
                 uid,
-                null, null);
+                null,Integer.MAX_VALUE, null);
         List<Get> gets = new ArrayList<>();
         for (Map.Entry<String, String> contentRowkey : contentRowkeys.entrySet()) {
             Get get = new Get(Bytes.toBytes(contentRowkey.getValue()));

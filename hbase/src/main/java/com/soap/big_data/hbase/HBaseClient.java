@@ -12,16 +12,22 @@ public class HBaseClient {
     public static void main(String[] args) throws Exception {
 //        HBaseConfiguration conf = new HBaseConfiguration();
         Configuration conf = HBaseConfiguration.create();
-        String tableName = "fruit_mr";
+        String tableName = "ns_ct:tb_calllog";
         // System.out.println(HBaseUtil.isTableExist(conf, tableName));
         String column = "info";
+        String namespace = "ns_ct";
 
-         System.out.println("创建表 " + HBaseUtil.createTable(conf,tableName,3,new String[]{"info"}));
+//         System.out.println("创建表 " + HBaseUtil.createTable(conf,tableName,3,new String[]{"info"}));
         // System.out.println(HBaseUtil.isTableExist(conf, tableName));
-//        System.out.println("删除表：" + HBaseUtil.dropTable(conf,tableName,true));
+        System.out.println("删除表：" + HBaseUtil.dropTable(conf,tableName,true));
+        System.out.println("删除命名空间 ：" + HBaseUtil.dropNamespace(conf,namespace));
 
         //添加单行单列数据
 //        System.out.println("添加数据：" + HBaseUtil.addRow(conf,"staff","1001","info","name","Mike"));
+//        Map<String, Map<String, String>> staff = HBaseUtil.scanner(conf, "staff", Integer.MAX_VALUE);
+//
+//        for (Map.Entry<String, Map<String, String>> entry : staff.entrySet()){}
+        
         //添加单行多列数据
 //        System.out.println("添加数据：" + HBaseUtil.addRowToColums(conf,"multi_version","1001","info",new String[]{"name","age"},new String []{"Soap1","161"}));
 //        System.out.println("添加数据：" + HBaseUtil.addRowToColums(conf,"multi_version","1001","info1",new String[]{"name","age"},new String []{"Soapa2","19"}));
