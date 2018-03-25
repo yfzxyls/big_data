@@ -23,8 +23,12 @@ public class FruitRunner implements Tool {
 
         job.setJarByClass(getClass());
         TableMapReduceUtil.initTableMapperJob(
-                "fruit", new Scan(),
-                FruitMapper.class, ImmutableBytesWritable.class, Put.class, job);
+                "fruit",
+                new Scan(),
+                FruitMapper.class,
+                ImmutableBytesWritable.class,
+                Put.class,
+                job);
         TableMapReduceUtil.initTableReducerJob("fruit_mr",
                 FruitReducer.class,
                 job);
