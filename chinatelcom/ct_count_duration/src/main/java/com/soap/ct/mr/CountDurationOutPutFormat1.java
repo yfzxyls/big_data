@@ -65,10 +65,10 @@ public class CountDurationOutPutFormat1 extends OutputFormat<CommonDimension, Co
             String sql = "INSERT INTO ct.tb_call(id_date_contact, id_date_dimension, id_contact, call_sum, call_duration_sum) VALUES (?,?,?,?,?)" +
                     " ON DUPLICATE KEY UPDATE id_date_contact = ?;";
             try {
-                if (preparedStatement == null){
+                if (preparedStatement == null) {
                     preparedStatement = connection.prepareStatement(sql);
                 }
-              
+
                 preparedStatement.setString(1, contactId + "_" + dateId);
                 preparedStatement.setInt(2, dateId);
                 preparedStatement.setInt(3, contactId);
@@ -91,8 +91,9 @@ public class CountDurationOutPutFormat1 extends OutputFormat<CommonDimension, Co
         @Override
         public void close(TaskAttemptContext context) throws IOException, InterruptedException {
             try {
-                logger.info("############ close  " );
-                preparedStatement.executeBatch();
+                logger.info("############ close  ");
+                if (preparedStatement != null)
+                    preparedStatement.executeBatch();
                 connection.commit();
             } catch (SQLException e) {
                 e.printStackTrace();
