@@ -12,6 +12,7 @@
         <module>ct_producer</module>
         <module>ct_consumer</module>
         <module>ct_count_duration</module>
+        <module>ct_web</module>
     </modules>
 
 

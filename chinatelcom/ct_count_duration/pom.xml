@@ -39,22 +39,7 @@
             <version>5.1.27</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>2.7.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-client</artifactId>
-            <version>2.7.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-hdfs</artifactId>
-            <version>2.7.2</version>
-        </dependency>
-
+       
         <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-client -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
@@ -62,7 +47,7 @@
             <version>1.3.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-server -->
+        <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbcom.soap.ct_web.serverrver -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-server</artifactId>
