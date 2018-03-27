@@ -4,7 +4,6 @@ import com.soap.ct.utils.Tools;
 import com.soap.ct.writable.CommonDimension;
 import com.soap.ct.writable.CountValueDimensionWritable;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Scan;
@@ -12,7 +11,6 @@ import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -39,12 +37,10 @@ public class CountDurationRunner implements Tool {
 
         Job job = Job.getInstance(conf, getClass().getSimpleName());
         job.setJarByClass(CountDurationRunner.class);
-        //添加第三方依赖
+        //添加多个第三方依赖
         job.addFileToClassPath(new Path("/jobs/mysql-connector-java-5.1.27-bin.jar"));
         job.addFileToClassPath(new Path("/jobs/fastjson-1.2.36.jar"));
-//        addTmpJars("/jobs/ct_count_duration-1.0-SNAPSHOT.jar", conf);
-//        addTmpJars("/jobs/mysql-connector-java-5.1.27-bin.jar", conf);
-//     
+
         String tableName = "ns_ct:tb_calllog";
         //04_19775072523_20170104->04_19775072523_20170201
 //        String start = "04_19775072523_20170104";
@@ -95,18 +91,6 @@ public class CountDurationRunner implements Tool {
     @Override
     public Configuration getConf() {
         return this.conf;
-    }
-
-    public static void addTmpJars(String jarPath, Configuration conf) throws IOException {
-        System.setProperty("path.separator", ":");
-        FileSystem fs = FileSystem.getLocal(conf);
-        String newJarPath = new Path(jarPath).makeQualified(fs).toString();
-        String tmpJars = conf.get(MRJobConfig.CLASSPATH_FILES);
-        if (tmpJars == null || tmpJars.length() == 0) {
-            conf.set(MRJobConfig.CLASSPATH_FILES, newJarPath);
-        } else {
-            conf.set(MRJobConfig.CLASSPATH_FILES, tmpJars + "," + newJarPath);
-        }
     }
 
     /**
