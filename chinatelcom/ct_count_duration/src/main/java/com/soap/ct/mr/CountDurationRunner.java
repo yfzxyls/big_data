@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
+import java.util.Enumeration;
 
 /**
  * Created by soap on 2018/3/23.
@@ -39,6 +41,7 @@ public class CountDurationRunner implements Tool {
         job.setJarByClass(CountDurationRunner.class);
         //添加第三方依赖
         job.addFileToClassPath(new Path("/jobs/mysql-connector-java-5.1.27-bin.jar"));
+        job.addFileToClassPath(new Path("/jobs/fastjson-1.2.36.jar"));
 //        addTmpJars("/jobs/ct_count_duration-1.0-SNAPSHOT.jar", conf);
 //        addTmpJars("/jobs/mysql-connector-java-5.1.27-bin.jar", conf);
 //     
@@ -61,19 +64,25 @@ public class CountDurationRunner implements Tool {
                 Text.class,
                 job,
                 true);
-
         //设置reducer
         Tools.setReduce(job, CountDurationReducer.class, CommonDimension.class, CountValueDimensionWritable.class);
-
         job.setOutputFormatClass(CountDurationOutPutFormat1.class);
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
+    /**
+     * 加载当前 Class 中jar包到当前虚拟机
+     * @throws NoSuchMethodException
+     * @throws MalformedURLException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     private void addJarToClassPath() throws NoSuchMethodException, MalformedURLException, IllegalAccessException, InvocationTargetException {
         Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
         addURL.setAccessible(true);
         URLClassLoader classloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-        String url = "file:///home/hadoop/calllog/jobs/lib/ct_count_duration-1.0-SNAPSHOT.jar"; // 包路径位置
+        String url = findContainingJar(getClass());
+        //        String url = "file:///home/hadoop/calllog/jobs/lib/ct_count_duration-1.0-SNAPSHOT.jar"; // 包路径位置
         URL classUrl = new URL(url);
         addURL.invoke(classloader, new Object[]{classUrl});
     }
@@ -97,6 +106,34 @@ public class CountDurationRunner implements Tool {
             conf.set(MRJobConfig.CLASSPATH_FILES, newJarPath);
         } else {
             conf.set(MRJobConfig.CLASSPATH_FILES, tmpJars + "," + newJarPath);
+        }
+    }
+
+    /**
+     * 根据 Class 找出jar包位置
+     * @param clazz
+     * @return
+     */
+    public static String findContainingJar(Class<?> clazz) {
+        ClassLoader loader = clazz.getClassLoader();
+        String classFile = clazz.getName().replaceAll("\\.", "/") + ".class";
+        try {
+            Enumeration itr = loader.getResources(classFile);
+            URL url;
+            do {
+                if(!itr.hasMoreElements()) {
+                    return null;
+                }
+                url = (URL)itr.nextElement();
+            } while(!"jar".equals(url.getProtocol()));
+            String toReturn = url.getPath();
+//            if(toReturn.startsWith("file:")) {
+//                toReturn = toReturn.substring("file:".length());
+//            }
+            toReturn = URLDecoder.decode(toReturn, "UTF-8");
+            return toReturn.replaceAll("!.*$", "");
+        } catch (IOException var6) {
+            throw new RuntimeException(var6);
         }
     }
 

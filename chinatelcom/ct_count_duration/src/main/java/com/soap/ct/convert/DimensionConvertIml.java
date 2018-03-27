@@ -1,11 +1,14 @@
 package com.soap.ct.convert;
 
+import com.alibaba.fastjson.JSONObject;
 import com.soap.ct.utils.ConnectionSingleton;
 import com.soap.ct.utils.JDBCUtil;
 import com.soap.ct.utils.LRUCache;
 import com.soap.ct.writable.BaseDimensionWritable;
 import com.soap.ct.writable.ContactDimensionWritable;
 import com.soap.ct.writable.DateDimensionWritable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,6 +19,8 @@ import java.sql.SQLException;
  * Created by soap on 2018/3/24.
  */
 public class DimensionConvertIml implements IConvert {
+
+    private Logger logger = LoggerFactory.getLogger(DimensionConvertIml.class);
 
     private ThreadLocal<Connection> conns = new ThreadLocal();
 
@@ -35,7 +40,10 @@ public class DimensionConvertIml implements IConvert {
         String cacheKey = genCacheKey(baseDimensionWritable);
         Integer dimensionId = -1;
         dimensionId = lruCache.get(cacheKey);
-        if (dimensionId != null && dimensionId != -1) return dimensionId;
+        if (dimensionId != null && dimensionId != -1) {
+            logger.info(JSONObject.toJSONString(lruCache));
+            return dimensionId;
+        }
         String[] sqls = genSql(baseDimensionWritable);
         Connection connection = getConn();
         if (baseDimensionWritable instanceof ContactDimensionWritable) {
