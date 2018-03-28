@@ -1,3 +1,4 @@
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -12,10 +13,10 @@ object Collection {
 
     val array = new Array[Int](5)
     val array1 = new Array[Int](6)
-    
+
     println(array.mkString(","))
     println(array(1) = 1)
-    println(array.mkString("a","b","c"))
+    println(array.mkString("a", "b", "c"))
 
     println("===========变长数组=========")
     /**
@@ -88,7 +89,7 @@ object Collection {
     println("========List 追加========")
     /**
       *  1. :: 追加效果与 +: 一样， 在后一个集合的第一位追加前面的元素
-      *   :+ 表示将后一个元素追加到前面集合的最后一位
+      * :+ 表示将后一个元素追加到前面集合的最后一位
       *
       *  2. +: 需要从后向前运算
       *  3. ++ 与 ::: 表示两个集合向连为一个新集合
@@ -96,23 +97,63 @@ object Collection {
     val listAdd = list :+ list2
     println(listAdd.toString())
 
-    val listAddNil1 = list ++ list2   //List(List(1,s,c,true),1,s,c,true,1)
-    println("listAddNil1:"+listAddNil1)
-    val listAddNil2 = list ::: list2   //List(List(1,s,c,true),1,s,c,true,1)
-    println("listAddNil2:"+listAddNil2)
+    val listAddNil1 = list ++ list2 //List(List(1,s,c,true),1,s,c,true,1)
+    println("listAddNil1:" + listAddNil1)
+    val listAddNil2 = list ::: list2 //List(List(1,s,c,true),1,s,c,true,1)
+    println("listAddNil2:" + listAddNil2)
 
 
-    val listAddNil3 = list +: list2 :: Nil   //List(List(1, s, c, true), List(1, s, c, true, 1))
+    val listAddNil3 = list +: list2 :: Nil //List(List(1, s, c, true), List(1, s, c, true, 1))
     println(listAddNil3)
 
-    val list4 = 1 :: 2 :: 3 :: list +: Nil  // List(1,2,3,List(1, s, c, true))
+    val list4 = 1 :: 2 :: 3 :: list +: Nil // List(1,2,3,List(1, s, c, true))
     println(list4)
 
-    val list5 = 1 +: 2 +: 3 +: list  // List(1,2,3,1, s, c, true)
+    val list5 = 1 +: 2 +: 3 +: list // List(1,2,3,1, s, c, true)
     println(list5)
 
-    val list6 = Nil :+ 1 :+ 2 :+ 3 :+ list  // List(1,2,3,List(1, s, c, true))
-    println(list6)    
+    val list6 = Nil :+ 1 :+ 2 :+ 3 :+ list // List(1,2,3,List(1, s, c, true))
+    println(list6)
+
+    println("============Queue 队列=============")
+    /**
+      * 1.队列创建必须指定范型
+      * 2.队列可以直接追加值
+      * 3.值可重复，先进先出
+      */
+    val q = new mutable.Queue[Any]
+    q += 1
+    q += 1.2
+    //追加List
+    q ++= List(1, 3, 5)
+    println(q)
+    q.dequeue()
+    q.enqueue(1)
+    println(q)
+
+    println(q.head)
+    println(q.tail)
+    println(q.front)
+    println(q.last)
+
+    println("=============Map ===============")
+    /**
+      * 1.可变集合初始化后才能添加元素,模式匹配
+      * 2.key相同重新赋值将 覆盖原有值
+      */
+    //不可变
+    val map1 = Map("Alice" -> 11, "Bob" -> 14, "Mike" -> 4)
+    map1.drop(0)
+    println(map1)
+
+    val map2 = mutable.Map("Alice" -> "aa", "Bob" -> 14, "Mike" -> 4)
+    map2 += ("Alice" -> 15)
+    for (x <- map2) {
+      println(x)
+    }
+
+    println(map2("Alice"))
+
 
   }
 
