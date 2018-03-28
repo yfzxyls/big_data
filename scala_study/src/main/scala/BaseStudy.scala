@@ -5,6 +5,9 @@ object BaseStudy {
 
   def main(args: Array[String]): Unit = {
 
+    val a = BigInt(5)./%(2)
+    println(a)
+
     //          *           i
     //         ***
     //        *****
@@ -152,7 +155,7 @@ object BaseStudy {
       if (b == 0) throw new RuntimeException("除数为0")
       a / b
     }
-    println(f8(10, 0))
+    //println(f8(10, 0))
 //    try {
 //      println(f8(10, 0))
 //    } catch {

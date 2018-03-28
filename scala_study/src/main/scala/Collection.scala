@@ -11,9 +11,11 @@ object Collection {
       */
 
     val array = new Array[Int](5)
+    val array1 = new Array[Int](6)
+    
     println(array.mkString(","))
     println(array(1) = 1)
-    println(array.mkString(","))
+    println(array.mkString("a","b","c"))
 
     println("===========变长数组=========")
     /**
@@ -100,17 +102,17 @@ object Collection {
     println("listAddNil2:"+listAddNil2)
 
 
-    val listAddNil3 = list :: list2 :: Nil   //List(List(1, s, c, true), List(1, s, c, true, 1))
+    val listAddNil3 = list +: list2 :: Nil   //List(List(1, s, c, true), List(1, s, c, true, 1))
     println(listAddNil3)
 
-    val list4 = 1 :: 2 :: 3 :: list :: Nil  // List(1,2,3,List(1, s, c, true))
+    val list4 = 1 :: 2 :: 3 :: list +: Nil  // List(1,2,3,List(1, s, c, true))
     println(list4)
 
-    val list5 = 1 :: 2 :: 3 :: list  // List(1,2,3,1, s, c, true)
+    val list5 = 1 +: 2 +: 3 +: list  // List(1,2,3,1, s, c, true)
     println(list5)
 
     val list6 = Nil :+ 1 :+ 2 :+ 3 :+ list  // List(1,2,3,List(1, s, c, true))
-    println(list6)
+    println(list6)    
 
   }
 
