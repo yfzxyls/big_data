@@ -1,4 +1,4 @@
-package unit6
+package example_class
 
 /**
   * Created by soap on 2018/3/28.

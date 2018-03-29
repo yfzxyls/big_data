@@ -1,38 +1,18 @@
+package function
+
 /**
-  * Created by soap on 2018/3/27.
+  * Created by soap on 2018/3/29.
   */
-object BaseStudy {
+object Function {
 
   def main(args: Array[String]): Unit = {
-
-    val a = BigInt(5)./%(2)
-    println(a)
-
-    //          *           i
-    //         ***
-    //        *****
-    //       *******
-    //     **********
-
-    //打印正三角形
-    //    for (i <- 1 to 10) {
-    //     for (j <- i to 10) {
-    //        print(" ")
-    //      }
-    //      for (k <- 1 to i) {
-    //        print("*")
-    //        print(" ")
-    //      }
-    //      println()
-    //    }
-
-
     /** function
       * 1.形式参数必须有类型
       * 2.返回值类型可以不指定 则最后一行为返回值
       * 3.没有等于号的则为特殊函数（结构体） 只能返回 Unit ()
       * 4.若指定返回值类型，则需要返回对应类型或者最后以对应类型结束 Unit 则为()
       * 5.方法内部不能给参数重新赋值
+      * 6.带默认值参数，使用时参数可以不传，参数不足时，从前向后匹配
       */
     def f1(a: Int, b: String): Unit = {
       1 + a
@@ -97,8 +77,8 @@ object BaseStudy {
     f5(1, 2, 3, 4, 5)
 
     //不能直接实例化可变参数函数，函数类型未知
-//    val f51 = (a:Int*)=>{}
-//    print(f51)
+    //    val f51 = (a:Int*)=>{}
+    //    print(f51)
 
     /**
       * 懒加载
@@ -148,21 +128,14 @@ object BaseStudy {
 
     println(f7(3))
 
-
-    println("===========异常========")
-
-    def f8(a: Int, b: Int) = {
-      if (b == 0) throw new RuntimeException("除数为0")
-      a / b
+   
+    def decorate(str: String, left: String = "[", right: String = "]") = {
+      left + str + right
     }
-    //println(f8(10, 0))
-//    try {
-//      println(f8(10, 0))
-//    } catch {
-//      case e: Exception => print("捕获异常：" + e.getMessage)
-//    } finally {
-//      println("执行finally")
-//    }
+
+    println(decorate("a", right = ","))
+
 
   }
+
 }
