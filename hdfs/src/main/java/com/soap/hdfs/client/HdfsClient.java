@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 
@@ -107,7 +108,7 @@ public class HdfsClient {
      * @throws IOException
      */
     @Test
-    public void testIO() throws IOException{
+    public void testIOToHDFS() throws IOException{
         // 2 创建输入流
         FileInputStream fis = new FileInputStream(new java.io.File("C:\\Users\\yangf\\Downloads\\upload.txt"));
 
@@ -121,6 +122,23 @@ public class HdfsClient {
         IOUtils.closeStream(fis);
         IOUtils.closeStream(fos);
     }
+
+    @Test
+    public void testIOToLcoal() throws IOException{
+        // 1 创建输出
+        FileOutputStream fis = new FileOutputStream(new java.io.File("C:\\Users\\yangf\\Downloads\\download.txt"));
+
+        // 3 获取输出流
+        FSDataInputStream fsDataInputStream = fs.open(new Path(""));
+
+        // 4 流对拷
+        IOUtils.copyBytes(fsDataInputStream, fis,1024);
+
+        // 5 关闭资源
+        IOUtils.closeStream(fis);
+        IOUtils.closeStream(fsDataInputStream);
+    }
+
 
     @After
     public void close() {
