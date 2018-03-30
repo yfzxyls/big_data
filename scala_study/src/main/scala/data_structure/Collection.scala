@@ -203,7 +203,7 @@ object Collection {
       * 3.reduceRight 从右到左，运算后的值放在右变继续与下一元素运算
       * 4.对于Set集合，按添加元素入顺序计算
       */
-    val set5 = mutable.Set(1, 2, -3, 4, 5)
+    val set5 = mutable.Set(1, 2, -3, 4, 5,5)
     val set6 = mutable.Set("1", "2", "-3", "4", "5")
     val res4 = set5.sum //  reduceLeft(_+_) =   reduce(_+_) == sum
     println("set5:" + set5)
