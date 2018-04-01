@@ -82,18 +82,28 @@ object HightFunction {
 
     println("=============控制抽象============")
 
-    def runInThread(f1:  => Unit): Unit = {
+    /**
+      * 1. 满足f1 结构的函数都会调用
+      */
+
+    def runInThread(f1: () => Unit): Unit = {
       new Thread {
         override def run(): Unit = {
-          f1
+          f1()
         }
       }.start()
     }
 
-    runInThread( {
-      println("干活咯！")
-      Thread.sleep(5000)
-      println("干完咯！")
+    runInThread( () =>{
+      println("1" + Thread.currentThread().getName)
+     // () =>
+        println("干活咯！")
+        println("2" + Thread.currentThread().getName)
+        Thread.sleep(5000)
+        println("3" + Thread.currentThread().getName)
+        () =>
+          println("干完咯！")
+          println("4" + Thread.currentThread().getName)
     })
 
   }

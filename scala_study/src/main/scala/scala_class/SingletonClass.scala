@@ -6,7 +6,7 @@ package scala_class
 class SingletonClass(name: String) {
 
   //TODO:类可以访问伴生类对象的使用属性,并不是相互访问
-  val age: Int = SingletonClass.play()
+  val age: Int = 0 //SingletonClass.play()
 
   override def toString = s"$name"
 
@@ -25,7 +25,4 @@ object SingletonClass {
     instance
   }
 
-  private def play() = {
-    2
-  }
 }

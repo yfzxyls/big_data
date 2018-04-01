@@ -10,6 +10,7 @@ object ScalaClass {
     /**
       * 1.类属性 var(生成getter setter) val (只生成getter)
       * 2.使用  @BeanProperty 可以生成 java 风格的getter setter
+      * 3.private 修饰 生成的getter setter 也为 private
       */
     val dog = new Dog
     dog.leg_=(1)
@@ -56,8 +57,8 @@ object ScalaClass {
     /**
       * 1.定义伴生对象apply方法后创建对象时可不是有new 关键字
       */
-    val singletonClass1 = SingletonClass("单列")
-    val singletonClass2 = SingletonClass("单列")
+    val singletonClass1 = SingletonClass
+    val singletonClass2 = SingletonClass
 
     println(singletonClass1 == singletonClass2)
 
@@ -83,14 +84,34 @@ object ScalaClass {
       * 1.先调主构造器，后调子构造器 ,主构造器自动调用父类构造器
       * 2.子类对象可以赋值给父类
       * 3. asInstanceOf 返回实际类型对象
+      * 
       */
     val man: Person = new Man()
+    val person = new Person
+    person.sex_=(1)
 
     println(man.isInstanceOf[Man])
     println(man.isInstanceOf[Person])
     println(man.asInstanceOf[Man].getClass)
     println(man.asInstanceOf[Person].getClass)
     println(classOf[Person])
+
+    println("==========枚举=============")
+    /**
+      * 1.枚举以id value 存在，id为自增可以不指定，指定时不能重复
+      *
+      */
+    println(TrafficLightColor.Red)
+    println(TrafficLightColor.Red.id)
+
+    println(TrafficLightColor.Yellow)
+    println(TrafficLightColor.Yellow.id)
+
+    println(TrafficLightColor.Green)
+    println(TrafficLightColor.Green.id)
+
+//    println(TrafficLightColor.Go)
+//    println(TrafficLightColor.Go.id)
 
   }
 
