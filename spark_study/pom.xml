@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     
     <modules>
-        <module>word_count</module>
+        <module>spark_core</module>
     </modules>
 
     <build>
