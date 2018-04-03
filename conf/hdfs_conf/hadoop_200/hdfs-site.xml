@@ -26,4 +26,18 @@
         <name>dfs.namenode.secondary.http-address</name>
         <value>hadoop202:50090</value>
     </property>
+
+    <!-- 关闭权限检查-->
+    <property>
+        <name>dfs.permissions.enable</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>dfs.namenode.http-address</name>
+        <value>hadop200:50070</value>
+    </property>
+    <property>
+        <name>dfs.webhdfs.enabled</name>
+        <value>true</value>
+    </property>
 </configuration>
