@@ -11,7 +11,8 @@ object SparkPersist {
     val sparkConf = new SparkConf().setAppName("persist").setMaster("local[*]")
     //.setMaster("local[*]")
     //创建SparkContext
-    sparkConf.set("user","hadoop")
+    //TODO:设置hadoop用户，
+    sparkConf.set("spark.hadoop.user","hadoop")
     val sc = new SparkContext(sparkConf)
     val rdd = sc.makeRDD(1 to 10)
     val nocache = rdd.map(_.toString + "[" + System.currentTimeMillis + "]")
