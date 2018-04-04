@@ -11,6 +11,7 @@
     
     <modules>
         <module>spark_core</module>
+        <module>spark_sql</module>
     </modules>
 
     <build>
