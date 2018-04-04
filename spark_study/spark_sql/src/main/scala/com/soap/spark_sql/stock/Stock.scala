@@ -65,7 +65,7 @@ object Stock {
   //9.5计算所有订单中每年最畅销货品
 //  目标：统计每年最畅销货品（哪个货品销售额amount在当年最高，哪个就是最畅销货品）
   def countYearItemMax (spark:SparkSession)={
-    val countYearItemMax = spark.sql("SELECT theyear, MAX(sum) FROM ( SELECT d.theyear, itemid, SUM(sd.amount) AS sum FROM tbStockDetail sd JOIN tbStock s ON sd.ordernumber = s.ordernumber JOIN tbDate d ON d.dateid = s.dateid GROUP BY sd.itemid, d.theyear ) t2 GROUP BY theyear")
+    val countYearItemMax = spark.sql("SELECT t2.itemid,td1.theyear from \n(SELECT d.theyear, itemid,sum(sd.amount) as sum \nfrom tbStockDetail sd \nJOIN tbStock s ON sd.ordernumber = s.ordernumber\njoin tbDate d  on  d.dateid = s.dateid \nGROUP BY sd.itemid,d.theyear) \nt2 JOIN tbStockDetail sd1 on t2.itemid = sd1.itemid \nJOIN tbDate td1 on td1.theyear = t2.theyear GROUP BY  t2.itemid,td1.theyear")
     countYearItemMax.show()
   }
 
