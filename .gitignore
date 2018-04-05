@@ -14,3 +14,9 @@ hs_err_pid*
 \.idea/
 
 *.iml
+
+spark_study/checkpoint/
+
+*.log
+
+spark_study/metastore_db/

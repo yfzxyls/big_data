@@ -8,39 +8,40 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>spark_core</artifactId>
-    <properties>
-        <scala.version>2.11.8</scala.version>
-        <spark.version>2.1.1</spark.version>
-        <slf4j.version>1.7.25</slf4j.version>
-        <log4j.version>1.2.17</log4j.version>
-    </properties>
+
+    <artifactId>spark_streaming</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
-            <!-- 编译期可用，集群环境不需要 -->
-            <!--<scope>provided</scope>-->
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_2.11</artifactId>
+            <version>${spark.version}</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-streaming-kafka -->
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.11</artifactId>
+            <artifactId>spark-streaming-kafka-0-8_2.11</artifactId>
             <version>${spark.version}</version>
-            <!-- 编译期可用，集群环境不需要 -->
-            <!--<scope>provided</scope>-->
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.36</version>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>0.11.0.2</version>
         </dependency>
-       
+
+        <!-- 连接池技术 -->
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
-           
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -56,9 +57,9 @@
                 </executions>
                 <configuration>
                     <!--<archive>-->
-                        <!--<manifest>-->
-                            <!--<mainClass>com.soap.spark.word_count.WordCount</mainClass>-->
-                        <!--</manifest>-->
+                    <!--<manifest>-->
+                    <!--<mainClass>com.soap.spark.word_count.WordCount</mainClass>-->
+                    <!--</manifest>-->
                     <!--</archive>-->
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -66,8 +67,7 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
 
-   
+    </build>
 
 </project>

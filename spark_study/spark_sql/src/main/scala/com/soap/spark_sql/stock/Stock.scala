@@ -35,11 +35,11 @@ object Stock {
 
   def init(spark: SparkSession): Unit = {
     import spark.implicits._
-    val tbStockRdd = spark.sparkContext.textFile("spark_sql/src/main/resources/tbStock.txt")
+    val tbStockRdd = spark.sparkContext.textFile("D:\\study\\big_data\\spark_study\\spark_sql\\src\\main\\resources/tbStock.txt")
     val tbStockDS = tbStockRdd.map(_.split(",")).map(attr => tbStock(attr(0), attr(1), attr(2))).toDS
-    val tbStockDetailRdd = spark.sparkContext.textFile("spark_sql/src/main/resources/tbStockDetail.txt")
+    val tbStockDetailRdd = spark.sparkContext.textFile("D:\\study\\big_data\\spark_study\\spark_sql\\src\\main\\resources/tbStockDetail.txt")
     val tbStockDetailDS = tbStockDetailRdd.map(_.split(",")).map(attr => tbStockDetail(attr(0), attr(1).trim().toInt, attr(2), attr(3).trim().toInt, attr(4).trim().toDouble, attr(5).trim().toDouble)).toDS
-    val tbDateRdd = spark.sparkContext.textFile("spark_sql/src/main/resources/tbDate.txt")
+    val tbDateRdd = spark.sparkContext.textFile("D:\\study\\big_data\\spark_study\\spark_sql\\src\\main\\resources\\tbDate.txt")
     val tbDateDS = tbDateRdd.map(_.split(",")).map(attr => tbDate(attr(0), attr(1).trim().toInt, attr(2).trim().toInt, attr(3).trim().toInt, attr(4).trim().toInt, attr(5).trim().toInt, attr(6).trim().toInt, attr(7).trim().toInt, attr(8).trim().toInt, attr(9).trim().toInt)).toDS
     //    tbDateDS.show()
     //    tbStockDS.show()
@@ -65,7 +65,7 @@ object Stock {
   //9.5计算所有订单中每年最畅销货品
 //  目标：统计每年最畅销货品（哪个货品销售额amount在当年最高，哪个就是最畅销货品）
   def countYearItemMax (spark:SparkSession)={
-    val countYearItemMax = spark.sql("SELECT t2.itemid,td1.theyear from \n(SELECT d.theyear, itemid,sum(sd.amount) as sum \nfrom tbStockDetail sd \nJOIN tbStock s ON sd.ordernumber = s.ordernumber\njoin tbDate d  on  d.dateid = s.dateid \nGROUP BY sd.itemid,d.theyear) \nt2 JOIN tbStockDetail sd1 on t2.itemid = sd1.itemid \nJOIN tbDate td1 on td1.theyear = t2.theyear GROUP BY  t2.itemid,td1.theyear")
+    val countYearItemMax = spark.sql("SELECT max_amount,t2.theyear,t2.itemid \nfrom (SELECT sum(sd.amount) as amount_sum,d.theyear,sd.itemid \nfrom tbStockDetail sd JOIN tbStock s on sd.ordernumber = s.ordernumber \nJOIN tbDate d on s.dateid = d.dateid  GROUP BY sd.itemid ,d.theyear) t2 join\n(SELECT max(amount_sum) as max_amount ,theyear \nfrom (SELECT sum(sd.amount) as amount_sum,d.theyear,sd.itemid \nfrom tbStockDetail sd JOIN tbStock s on sd.ordernumber = s.ordernumber \nJOIN tbDate d on s.dateid = d.dateid  GROUP BY sd.itemid ,d.theyear) t2 \nGROUP BY theyear) t1 on  t1.max_amount = t2.amount_sum")
     countYearItemMax.show()
   }
 
