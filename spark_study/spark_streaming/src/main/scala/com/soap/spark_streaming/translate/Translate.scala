@@ -4,7 +4,7 @@ import org.apache.log4j.{Level, Logger}
 import org.apache.spark.SparkConf
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.DStream
-import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.streaming.{Seconds, State, StateSpec, StreamingContext}
 
 import scala.collection.mutable
 
@@ -20,16 +20,38 @@ object Translate {
     //* 1.有状态转换函数必须 checkpoint 保存上一次结果
     ssc.checkpoint("./checkpoint")
     val words = socketText.flatMap(_.split(" ")).map((_, 1))
+
+    /**
+      * reduceFunc  下一批次运算
+      * invReduceFunc 上一批次
+      *
+      */
+    val wordCount = words.reduceByKeyAndWindow(_ + _, _ - _, Seconds(5), Seconds(10))
+
+    //key是K, value是新值，state是原始值(本batch之前的状态值)。这里你需要把state更新为新值
+    val mappingFunc = (key: String, value: Option[Int], state: State[Int]) => {
+      val currentPV = value.getOrElse(0)
+      val output = (key, currentPV, state.getOption().getOrElse(0))
+      state.update(currentPV)
+      output
+    }
+
+    //StateSpec只是一个包裹，实际操作仍然是定义的mappingFunc函数
+    val urlPvs = wordCount.mapWithState(StateSpec.function(mappingFunc)) //url,当前batch的PV,上一个batch的PV
+    urlPvs.print()
+
     /**
       * 使用窗口函数 统计某一时间段内的 数据
       * windowDuration 窗口大小
       * slideDuration 移动步长 两个参数必须为 ssc 扫描间隔的整数倍
+      * 窗口期内的所有数据进行计算
       */
-    val wordCount = words.reduceByKeyAndWindow((v1:Int,v2:Int)=>v1 + v2, Seconds(5),Seconds(10))
+    //    val wordCount = words.reduceByKeyAndWindow((v1:Int,v2:Int)=>v1 + v2, Seconds(5),Seconds(10))
+
     /**
       * 每次获取数据都生成新文件
       */
-//    words.saveAsTextFiles("hdfs://hadoop200:9000/spark/streaminf/output")
+    //    words.saveAsTextFiles("hdfs://hadoop200:9000/spark/streaminf/output")
     /**
       * 累积操作
       * 根据时间的推进，不断的在每一个RDD上应用updateFunc函数，
@@ -44,9 +66,10 @@ object Translate {
     //        }
     //      )
 
-    wordCount.print()
+    //    wordCount.print()
     ssc.start()
     ssc.awaitTermination()
+    ssc.stop(true, true)
 
     //    DStreamQueue(ssc)
   }

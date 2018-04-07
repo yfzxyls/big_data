@@ -20,3 +20,5 @@ spark_study/checkpoint/
 *.log
 
 spark_study/metastore_db/
+
+spark_study/logs/
