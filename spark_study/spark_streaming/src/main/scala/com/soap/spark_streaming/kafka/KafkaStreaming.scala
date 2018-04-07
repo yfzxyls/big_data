@@ -31,8 +31,7 @@ object KafkaStreaming {
     val brokenList = "hadoop200:9092,hadoop201:9092,hadoop202:9092"
     val zookeeper = "hadoop200:2181,hadoop201:2181,hadoop202:2181"
     val sourceTopic = "source"
-    val targetTopic = "target"
-    val groupid = "kafka_stream_consumer"
+    val groupid = "kafka_stream_consumer1"
 
     //创建Kafka的连接参数
     val kafkaParam = Map[String, String](
@@ -40,7 +39,7 @@ object KafkaStreaming {
       ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringDeserializer",
       ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringDeserializer",
       ConsumerConfig.GROUP_ID_CONFIG -> groupid,
-      ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> "largest"
+      ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> kafka.api.OffsetRequest.LargestTimeString
     )
 
     loadFromKafkaByZookeeperOffset(ssc, zookeeper, sourceTopic, kafkaParam)
@@ -136,14 +135,14 @@ object KafkaStreaming {
       rdd
     }
 
-    send2Kafka(brokenList, textKafkaDStream2,groupid,sourceTopic,zookeeper,offsetRanges)
+    send2Kafka(brokenList, textKafkaDStream2, groupid, sourceTopic, zookeeper, offsetRanges)
 
 
   }
 
   private def send2Kafka(brokenList: String, textKafkaDStream2: DStream[(String, String)],
-                         groupid: String, sourceTopic: String ,
-                        zookeeper: String ,offsetRanges:Array[OffsetRange] ) ={
+                         groupid: String, sourceTopic: String,
+                         zookeeper: String, offsetRanges: Array[OffsetRange]) = {
     textKafkaDStream2.map(s => "key:" + s._1 + " value:" + s._2).foreachRDD { rdd =>
       //RDD操作
       rdd.foreachPartition {
@@ -155,22 +154,24 @@ object KafkaStreaming {
           val kafkaProxy = pool.borrowObject()
           //插入数据
           for (item <- items)
-            kafkaProxy.send("", item)
+            kafkaProxy.send("target", item)
 
           //返回连接
           pool.returnObject(kafkaProxy)
       }
+      println("rdd" + rdd.collect().mkString(","))
       //保存Offset到ZK
       val updateTopicDirs = new ZKGroupTopicDirs(groupid, sourceTopic)
       val updateZkClient = new ZkClient(zookeeper)
       for (offset <- offsetRanges) {
         //将更新写入到Path
-        logger.warn(offset)
+        logger.warn("update zk offset :"+offset)
         val zkPath = s"${updateTopicDirs.consumerOffsetDir}/${offset.partition}"
         ZkUtils.updatePersistentPath(updateZkClient, zkPath, offset.fromOffset.toString)
       }
       updateZkClient.close()
     }
+
   }
 
   /**

@@ -21,6 +21,6 @@ export CLASSPATH
 
 $JAVA_HOME/bin/java -Dfile.encoding=UTF-8 -Dproducer=prod  com.soap.chaintelcom.producer.Producer  &> $PROCESS_HOME/out.log &
 
-if [ ! -z "process.pid" ]; then
-  echo $! > process.pid
+if [ ! -z "RUNNING_PID" ]; then
+  echo $! > RUNNING_PID
 fi

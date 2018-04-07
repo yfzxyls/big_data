@@ -13,6 +13,10 @@ object WorldCount {
       * 需要长期运行的接收器，因此必须多线程
       */
     val sc = new SparkConf().setAppName("streaming_word_count").setMaster("local[*]")
+//    Range(1,100000,5).map(x => {
+//      if (x % 2 == 1) (0, Seq(1, 2, 3))
+//      else (1, scala.collection.mutable.LinkedList(2, 4, 6))}).map((x,y)=>(x,y))
+    val rdd = (1 to 100000).map(x => {if (x % 2 == 1) (0, Seq(1, 2, 3)) else (1, scala.collection.mutable.LinkedList(2, 4, 6))})//.groupByKey()//.filter(p => p._1 == 1).flatMap(p => p._2)
     //优雅停机
     //    sc.set("spark.streaming.stopGracefullyOnShutdown", "true")
     val ssc = new StreamingContext(sc, Seconds(5))
