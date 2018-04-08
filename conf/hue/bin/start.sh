@@ -5,8 +5,7 @@ then
   exit
 fi
 
-nohup /opt/module/hue/build/env/bin/supervisor & > nohup.out
-
+nohup /opt/module/hue/build/env/bin/supervisor &
 
 if [ ! -z "RUNNING_PID" ]; then
   echo $! > RUNNING_PID
