@@ -5,7 +5,8 @@ then
   exit
 fi
 
-nohup /opt/module/kafka-manager-1.3.3.15/bin/kafka-manager  -Dconfig.file=/opt/module/kafka-manager-1.3.3.15/conf/application.conf -Dhttp.port=8080 & > nohup.out
+nohup /opt/module/hue/build/env/bin/supervisor & > nohup.out
+
 
 if [ ! -z "RUNNING_PID" ]; then
   echo $! > RUNNING_PID
