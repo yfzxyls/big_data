@@ -20,8 +20,8 @@ object WorldCount {
     //优雅停机
     //    sc.set("spark.streaming.stopGracefullyOnShutdown", "true")
     val ssc = new StreamingContext(sc, Seconds(5))
-    loadFromHDFS(ssc)
-    //    loadFormPort(ssc)
+//    loadFromHDFS(ssc)
+        loadFormPort(ssc)
     ssc.start()
     ssc.awaitTermination()
     //    ssc.awaitTerminationOrTimeout(5000)
