@@ -48,9 +48,9 @@ object TrafficProduce {
       map.put("speed", speed)
       val str = JSON.toJSON(map).toString
       println(str)
-      produce.send(new ProducerRecord[String, String](PropertiesUtil.getKey("kafka.topics"), str))
+      //produce.send(new ProducerRecord[String, String](PropertiesUtil.getKey("kafka.topics"), str))
 
-      Thread.sleep(200)
+      Thread.sleep(500)
     }
 
   }
