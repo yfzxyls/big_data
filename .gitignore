@@ -22,3 +22,5 @@ spark_study/checkpoint/
 spark_study/metastore_db/
 
 spark_study/logs/
+
+traffic/spark/checkpoint/
