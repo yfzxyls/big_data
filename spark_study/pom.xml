@@ -66,6 +66,7 @@
         <module>spark_core</module>
         <module>spark_sql</module>
         <module>spark_streaming</module>
+        <module>spark_mllib</module>
     </modules>
 
     <build>

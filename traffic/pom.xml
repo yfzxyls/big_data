@@ -11,6 +11,8 @@
     <modules>
         <module>traffic_produce</module>
         <module>traffic_consumer</module>
+        <module>traffic_train</module>
+        <module>traffic_prediction</module>
     </modules>
     <dependencies>
         <dependency>

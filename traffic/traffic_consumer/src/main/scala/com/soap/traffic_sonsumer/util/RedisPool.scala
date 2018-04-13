@@ -5,7 +5,7 @@ import redis.clients.jedis.{JedisPool, JedisPoolConfig}
 /**
   * Created by soap on 2018/4/11.
   */
-class RedisPool(host: String, port: Int = 6379, timeout: Int = 30000) {
+@SerialVersionUID(1L) class RedisPool(host: String, port: Int = 6379, timeout: Int = 30000) extends Serializable {
   val config = new JedisPoolConfig
   config.setMaxTotal(200)
   config.setMaxIdle(50)
