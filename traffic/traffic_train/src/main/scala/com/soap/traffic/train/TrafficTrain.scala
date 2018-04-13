@@ -124,7 +124,7 @@ object TrafficTrain {
       writer.write("accuracy: " + accuracy.toString + "\r\n")
       //保存模型
       if (accuracy >= 0.0) {
-        val date = DateTime.now().toString("yyyyMMddHHmmss")
+        val date = DateTime.now().toString("yyyyMMddHHmm")
         val hdfsPath = "hdfs://hadoop200:9000/traffic/model/" +
           monitorId +
           "_" + date
