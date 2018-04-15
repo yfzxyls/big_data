@@ -24,3 +24,9 @@ spark_study/metastore_db/
 spark_study/logs/
 
 traffic/spark/checkpoint/
+
+commerce/metastore_db/
+
+*.crc
+
+*.parquet
