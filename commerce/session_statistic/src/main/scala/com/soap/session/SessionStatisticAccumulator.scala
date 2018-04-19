@@ -17,6 +17,7 @@ class SessionStatisticAccumulator extends AccumulatorV2[String, mutable.Map[Stri
     newAccMap
   }
 
+
   override def reset(): Unit = {
     accMap.clear()
   }
@@ -29,9 +30,12 @@ class SessionStatisticAccumulator extends AccumulatorV2[String, mutable.Map[Stri
   override def merge(other: AccumulatorV2[String, mutable.Map[String, Int]]): Unit = {
     other match {
       case acc: SessionStatisticAccumulator =>
-        (this.accMap /: acc.accMap) {
-          case (map, (k, v)) => map += (k -> (map.getOrElse(k, 0) + v))
+        acc.accMap.foldLeft(this.accMap){
+          case (map,(k,v)) => map += (k -> (map.getOrElse(k, 0) + v))
         }
+//        (this.accMap /: acc.accMap) {
+//          case (map, (k, v)) => map += (k -> (map.getOrElse(k, 0) + v))
+//        }
       case _ =>
     }
   }

@@ -9,9 +9,10 @@ import commons.utils._
 import net.sf.json.JSONObject
 import org.apache.spark.SparkConf
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{Dataset, SaveMode, SparkSession}
+import org.apache.spark.sql.{DataFrame, Dataset, SaveMode, SparkSession}
 
 import scala.collection.mutable
+import scala.util.Random
 
 object UserVisitSessionAnalyze {
 
@@ -35,12 +36,323 @@ object UserVisitSessionAnalyze {
     filterInfo.count()
     //filterInfo.foreach(println(_))
 
-    // 生成全局唯一的主键
+    //生成全局唯一的主键
     val taskUUID = UUID.randomUUID().toString
-    getSessionPercentStatistic(sparkSession, taskUUID, sessionStatisticAccumulator.accMap)
+    //将累加器中的数据保存至数据库
+    //getSessionPercentStatistic(sparkSession, taskUUID, sessionStatisticAccumulator.accMap)
+
+    //getExtractSession(sparkSession, filterInfo, taskUUID)
+
+    val sessionIdAndVisitAction = orgUserVisitAction.map(item => (item.session_id, item))
+    val filterSessionIdAndVisitAction = filterInfo.join(sessionIdAndVisitAction).map(item => (item._1, item._2._2))
+
+    val top10Category = getTopNCategory(filterSessionIdAndVisitAction, sparkSession, taskUUID, 10)
+
+
+    val top10ClickCategory = getTop10ClickCategory(top10Category, sessionIdAndVisitAction, sparkSession,taskUUID)
+  }
+
+
+  /**
+    * 点击类别TOP10的session的TOP10
+    * @param top10Category
+    * @param sessionIdAndVisitAction
+    * @param sparkSession
+    * @param taskId
+    */
+  def getTop10ClickCategory(top10Category: Array[(Category, Long)],
+                            sessionIdAndVisitAction: RDD[(String, UserVisitAction)],
+                            sparkSession: SparkSession,
+                            taskId: String) = {
+    val clickCategoryId = sessionIdAndVisitAction.map {
+      case (sessionId, userVisitAction) =>
+        (userVisitAction.click_category_id, userVisitAction)
+    }
+    val top10CategoryId = sparkSession.sparkContext.makeRDD(top10Category).map(item => (item._2, 1))
+
+    // cid Array(userVisitAction)
+    val top10SessionCategory = top10CategoryId.join(clickCategoryId).map(item => (item._2._2.session_id, item._2._2)).groupByKey()
+
+    val top10CategoryIdAndSession = top10SessionCategory.flatMap {
+      case (sessionId, userVisitActions) =>
+        //同一session 中 点击次数
+        val clickCategoryCount = new mutable.HashMap[Long, Long]()
+        for (action <- userVisitActions) {
+          if (!clickCategoryCount.contains(action.click_category_id))
+            clickCategoryCount += action.click_category_id -> 0
+          clickCategoryCount.update(action.click_category_id, clickCategoryCount(action.click_category_id) + 1)
+        }
+        for ((cid, count) <- clickCategoryCount) yield (cid, sessionId + "=" + count)
+    }.groupByKey()
+
+    val top10Session = top10CategoryIdAndSession.flatMap {
+      case (cid, sessionCount) =>
+        val top10Session = sessionCount.toList.sortWith((sessionCount1, sessionCount2) =>
+          sessionCount1.split("=")(1) > sessionCount2.split("=")(1)
+        ).take(10)
+        top10Session.map {
+          case (topSessionCount) =>
+            val sessionId = topSessionCount.split("=")(0)
+            val count = topSessionCount.split("=")(1).toLong
+            new Top10Session(taskId, cid, sessionId, count)
+        }
+    }
+    import sparkSession.implicits._
+    saveRDDToMysql(top10Session.toDF,sparkSession,"top_click_session")
 
   }
 
+  def getTopNCategory(filterInfo: RDD[(String, UserVisitAction)],
+                      sparkSession: SparkSession,
+                      taskUUID: String,
+                      topN: Int
+                     ): Array[(Category, Long)] = {
+    //过滤出点击 下单 付款的 categoryid
+    val categoryIds = filterInfo.flatMap {
+      case (sessionId, sessionInfo) =>
+        val categoryIds = new mutable.HashMap[Long, Long]()
+        if (sessionInfo.click_category_id != -1 && !categoryIds.contains(sessionInfo.click_category_id)) {
+          categoryIds.put(sessionInfo.click_category_id, 1L)
+        } else if (sessionInfo.order_product_ids != null) {
+          for (orderCategoryId <- sessionInfo.order_product_ids.split("_")) {
+            if (!categoryIds.contains(orderCategoryId.toLong)) {
+              categoryIds.put(orderCategoryId.toLong, 1L)
+            }
+          }
+        } else if (sessionInfo.pay_product_ids != null) {
+          for (payCategoryId <- sessionInfo.pay_product_ids.split("_")) {
+            if (!categoryIds.contains(payCategoryId.toLong)) {
+              categoryIds.put(payCategoryId.toLong, 1L)
+            }
+          }
+        }
+        categoryIds
+    }.distinct()
+
+
+    val clickCategoryIds = getClickCategoryIdCount(filterInfo)
+    val orderCategoryIds = getOrderCategoryIdCount(filterInfo)
+    val payCategoryIds = getPayCategoryIdCount(filterInfo)
+
+    val fullCategoryIds = getFullCategoryIds(categoryIds, clickCategoryIds, orderCategoryIds, payCategoryIds)
+    val topNCategorySort = fullCategoryIds.map {
+      case (categoryId, fullInfo) =>
+        val clickCount = StringUtils.getFieldFromConcatString(fullInfo, "\\|", Constants.FIELD_CLICK_COUNT).toLong
+        val orderCount = StringUtils.getFieldFromConcatString(fullInfo, "\\|", Constants.FIELD_ORDER_COUNT).toLong
+        val payCount = StringUtils.getFieldFromConcatString(fullInfo, "\\|", Constants.FIELD_PAY_COUNT).toLong
+        (new Category(clickCount, orderCount, payCount), categoryId)
+    }.sortByKey(false)
+    val topNCategory = topNCategorySort.take(topN)
+    val topNCategoryRdd = topNCategory.map {
+      case (category, categoryId) => new Top10Category(taskUUID, categoryId, category.click, category.order, category.pay)
+    }
+    import sparkSession.implicits._
+    saveRDDToMysql(sparkSession.sparkContext.makeRDD(topNCategoryRdd).toDF, sparkSession, "top10_category")
+    topNCategory
+  }
+
+  /**
+    * 获取点击的 CategoryId
+    *
+    * @param filterInfo
+    * @return
+    */
+  def getClickCategoryIdCount(filterInfo: RDD[(String, UserVisitAction)]) = {
+    filterInfo.filter(item => item._2.click_category_id != -1).map(action => (action._2.click_category_id, 1L))
+      .reduceByKey(_ + _)
+  }
+
+  /**
+    * 获取下单的 CategoryId
+    *
+    * @param filterInfo
+    * @return
+    */
+  def getOrderCategoryIdCount(filterInfo: RDD[(String, UserVisitAction)]) = {
+    filterInfo.filter(item => item._2.order_category_ids != null).flatMap {
+      case (sessionId, userVisitAction) => userVisitAction.order_category_ids.split(",").map(item => (item.toLong, 1L))
+    }.reduceByKey(_ + _)
+  }
+
+  /**
+    * 获取下单的 CategoryId
+    *
+    * @param filterInfo
+    * @return
+    */
+  def getPayCategoryIdCount(filterInfo: RDD[(String, UserVisitAction)]) = {
+    filterInfo.filter(item => item._2.pay_category_ids != null).flatMap {
+      case (sessionId, userVisitAction) => userVisitAction.pay_category_ids.split(",").map(item => (item.toLong, 1L))
+    }.reduceByKey(_ + _)
+  }
+
+  def getFullCategoryIds(categoryIds: RDD[(Long, Long)],
+                         clickCategoryIds: RDD[(Long, Long)],
+                         orderCategoryIds: RDD[(Long, Long)],
+                         payCategoryIds: RDD[(Long, Long)]) = {
+    val clickCategory = categoryIds.leftOuterJoin(clickCategoryIds).map {
+      case (categoryId, (cid, categoryCount)) =>
+        val count = if (categoryCount.isDefined) categoryCount.get else 0
+        (categoryId, Constants.FIELD_CLICK_COUNT + "=" + count)
+    }
+
+    val orderCategory = clickCategory.leftOuterJoin(orderCategoryIds).map {
+      case (categoryId, (clickInfo, orderCount)) =>
+        val count = if (orderCount.isDefined) orderCount.get else 0
+        (categoryId, clickInfo + "|"
+          + Constants.FIELD_ORDER_COUNT + "=" + count)
+    }
+    val payCategory = orderCategory.leftOuterJoin(payCategoryIds).map {
+      case (categoryId, (orderInfo, payCount)) =>
+        val count = if (payCount.isDefined) payCount.get else 0
+        (categoryId, orderInfo + "|"
+          + Constants.FIELD_PAY_COUNT + "=" + count)
+    }
+    payCategory
+  }
+
+  def getExtractSession(sparkSession: SparkSession,
+                        filterInfo: RDD[(String, String)],
+                        taskUUID: String) = {
+    //将数据转化为 date_HH info 结构
+    val dateHourInfo = filterInfo.map {
+      case (sessionId, info) => {
+        val dateTime = StringUtils.getFieldFromConcatString(info, "\\|", Constants.FIELD_START_TIME)
+        val dateHour = DateUtils.getDateHour(dateTime)
+        //转化为 2018-04-01_12 info
+        (dateHour, info)
+      }
+    }
+
+    //获取每小时 session 条数
+    val countHour = dateHourInfo.countByKey()
+
+    //每小时 session 条数
+    val dateHourCountMap = new mutable.HashMap[String, mutable.HashMap[String, Long]]()
+    //date ,(hour,count)
+    for ((dateHour, count) <- countHour) {
+      val date = dateHour.split("_")(0)
+      val hour = dateHour.split("_")(1)
+      dateHourCountMap.get(date) match {
+        case None => dateHourCountMap(date) = new mutable.HashMap[String, Long]()
+          dateHourCountMap(date) += (hour -> count)
+        case Some(v) => v += (hour -> count)
+      }
+    }
+
+    //计算每天应该抽取数量
+    val perDateSession = 100 / dateHourCountMap.size
+
+
+    val random = new Random()
+
+
+    /**
+      * 根据当天某小时的占比生成该小时的索引
+      *
+      * @param perSession
+      * @param hourCountMap
+      * @param hourCountIndexMap
+      */
+    def getEtractRandomIndex(perSession: Long,
+                             hourCountMap: mutable.HashMap[String, Long],
+                             hourCountIndexMap: mutable.HashMap[String, mutable.Set[Long]]) = {
+      for ((hour, count) <- hourCountMap) {
+        //根据 每天某一小时的访问占比，计算 该小时应该抽取的数量
+        var perHourCount = ((count / perSession.toDouble) * perDateSession).toInt
+        //TODO:可以不修正
+        //if (perHourCount > count)perHourCount = count.toInt
+        hourCountIndexMap.get(hour) match {
+          case None => hourCountIndexMap(hour) = new mutable.HashSet[Long]()
+            while (hourCountIndexMap(hour).size < perHourCount) {
+              //可能会有索引为0的项，取值时从0开始
+              val index = random.nextInt(count.toInt)
+              hourCountIndexMap(hour).add(index)
+            }
+          case Some(indexSet) =>
+            while (indexSet.size < perHourCount) {
+              //可能会有索引为0的项，取值时从0开始
+              val index = random.nextInt(count.toInt)
+              indexSet.add(index)
+            }
+        }
+      }
+    }
+
+    //定义每天每小时的 index
+    val perDateHourIndex = new mutable.HashMap[String, mutable.HashMap[String, mutable.Set[Long]]]()
+    //计算每小时应该抽取的索引
+    for ((date, hourCountMap) <- dateHourCountMap) {
+      val countPerSession = hourCountMap.values.sum
+      perDateHourIndex.get(date) match {
+        case None => perDateHourIndex(date) = new mutable.HashMap[String, mutable.Set[Long]]
+          getEtractRandomIndex(countPerSession, hourCountMap, perDateHourIndex(date))
+        case Some(hourIndexMap) => getEtractRandomIndex(countPerSession, hourCountMap, hourIndexMap)
+      }
+    }
+
+    //将每小时需要抽取的索引广播
+    val perDateHourIndexBrodcast = sparkSession.sparkContext.broadcast(perDateHourIndex)
+
+
+    //将每天每小时的访问聚合 2018-04-17_16 sessionInfo
+    val dateHourAndCount = dateHourInfo.groupByKey()
+
+    //TODO: flatMap map
+    val extractSessionInfo = dateHourAndCount.flatMap {
+      case (dateHour, sessions) => {
+        val extractSession = new mutable.ArrayBuffer[SessionRandomExtract]()
+        val date = dateHour.split("_")(0)
+        val hour = dateHour.split("_")(1)
+        //TODO: value(date)(hour)
+        val perHourIndex = perDateHourIndexBrodcast.value(date)(hour)
+        var index = 0
+        for (sessionInfo <- sessions) {
+          if (perHourIndex.contains(index)) {
+            val sessionId = StringUtils.getFieldFromConcatString(sessionInfo, "\\|", Constants.FIELD_SESSION_ID)
+            val startTime = StringUtils.getFieldFromConcatString(sessionInfo, "\\|", Constants.FIELD_START_TIME)
+            val searchKeywords = StringUtils.getFieldFromConcatString(sessionInfo, "\\|", Constants.FIELD_SEARCH_KEYWORDS)
+            val clickCategoryIds = StringUtils.getFieldFromConcatString(sessionInfo, "\\|", Constants.FIELD_CLICK_CATEGORY_IDS)
+            extractSession.append(new SessionRandomExtract(taskUUID, sessionId, startTime, searchKeywords, clickCategoryIds))
+          }
+          index += 1
+        }
+        extractSession
+      }
+    }
+    import sparkSession.implicits._
+    saveRDDToMysql(extractSessionInfo.toDF, sparkSession, "session_extract")
+
+  }
+
+  /**
+    * 将RDD 保存到数据库 对应表中 以新增方式
+    *
+    * @param extractSessionInfo
+    * @param sparkSession
+    * @param tableName
+    */
+  private def saveRDDToMysql(extractSessionInfo: DataFrame,
+                             sparkSession: SparkSession,
+                             tableName: String) = {
+
+    extractSessionInfo.write
+      .format("jdbc")
+      .option("url", ConfigurationManager.config.getString(Constants.JDBC_URL))
+      .option("user", ConfigurationManager.config.getString(Constants.JDBC_USER))
+      .option("password", ConfigurationManager.config.getString(Constants.JDBC_PASSWORD))
+      .option("dbtable", tableName)
+      .mode(SaveMode.Append)
+      .save()
+  }
+
+  /**
+    * 将累加器中的值保存在数据库
+    *
+    * @param sparkSession
+    * @param taskUUID
+    * @param value
+    */
   def getSessionPercentStatistic(sparkSession: SparkSession,
                                  taskUUID: String,
                                  value: mutable.HashMap[String, Int]): Unit = {
@@ -86,17 +398,9 @@ object UserVisitSessionAnalyze {
       step_length_1_3_ratio, step_length_4_6_ratio, step_length_7_9_ratio,
       step_length_10_30_ratio, step_length_30_60_ratio, step_length_60_ratio)
 
-    val aggRdd = sparkSession.sparkContext.makeRDD(Array(stat))
-
     import sparkSession.implicits._
-    aggRdd.toDF().write.format("jdbc")
-      .option("url", ConfigurationManager.config.getString(Constants.JDBC_URL))
-      .option("user", ConfigurationManager.config.getString(Constants.JDBC_USER))
-      .option("password", ConfigurationManager.config.getString(Constants.JDBC_PASSWORD))
-      .option("dbtable", "session_aggr_stat")
-      .mode(SaveMode.Append)
-      .save()
-
+    val aggRdd = sparkSession.sparkContext.makeRDD(Array(stat)).toDF()
+    saveRDDToMysql(aggRdd, sparkSession, "session_aggr_stat")
   }
 
   /**

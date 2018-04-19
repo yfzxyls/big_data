@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>session_statistic</artifactId>
+    <artifactId>commerce_pagesate</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.soap</groupId>
@@ -46,9 +46,9 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
-                        <manifest>
-                            <mainClass>com.soap.session.UserVisitSessionAnalyze</mainClass>
-                        </manifest>
+                        <!--<manifest>-->
+                            <!--<mainClass>com.soap.session.UserVisitSessionAnalyze</mainClass>-->
+                        <!--</manifest>-->
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -57,4 +57,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

@@ -30,3 +30,9 @@ commerce/metastore_db/
 *.crc
 
 *.parquet
+
+*.dat
+
+spark-warehouse/person1/_SUCCESS
+
+metastore_db/

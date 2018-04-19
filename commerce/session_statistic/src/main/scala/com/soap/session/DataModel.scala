@@ -87,25 +87,25 @@ case class SessionDetail(taskid:String,
 /**
   * 品类Top10表
   * @param taskid
-  * @param categoryid
-  * @param clickCount
-  * @param orderCount
-  * @param payCount
+  * @param category_id
+  * @param click_count
+  * @param order_count
+  * @param pay_count
   */
 case class Top10Category(taskid:String,
-                         categoryid:Long,
-                         clickCount:Long,
-                         orderCount:Long,
-                         payCount:Long)
+                         category_id:Long,
+                         click_count:Long,
+                         order_count:Long,
+                         pay_count:Long)
 
 /**
   * Top10 Session
   * @param taskid
-  * @param categoryid
-  * @param sessionid
-  * @param clickCount
+  * @param category_id
+  * @param session_id
+  * @param click_count
   */
 case class Top10Session(taskid:String,
-                        categoryid:Long,
-                        sessionid:String,
-                        clickCount:Long)
+                        category_id:Long,
+                        session_id:String,
+                        click_count:Long)
