@@ -43,13 +43,16 @@ object KafkaStreaming {
     )
 
     loadFromKafkaByZookeeperOffset(ssc, zookeeper, sourceTopic, kafkaParam)
-    //    loadFromKafka(ssc, sourceTopic, kafkaParam)
+    //loadFromKafka(ssc, sourceTopic, kafkaParam)
 
     ssc.start()
     ssc.awaitTermination()
   }
 
-  private def loadFromKafkaByZookeeperOffset(ssc: StreamingContext, zookeeper: String, sourceTopic: String, kafkaParam: Map[String, String]) = {
+  private def loadFromKafkaByZookeeperOffset(ssc: StreamingContext,
+                                             zookeeper: String,
+                                             sourceTopic: String,
+                                             kafkaParam: Map[String, String]) = {
     val brokenList = kafkaParam.getOrElse[String](ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "")
     val groupid = kafkaParam.getOrElse[String](ConsumerConfig.GROUP_ID_CONFIG, "")
     var textKafkaDStream: InputDStream[(String, String)] = null
@@ -76,7 +79,8 @@ object KafkaStreaming {
       //kafka集群中任意节点ip port
       val hostAndPort = brokenList.split(",")(0).split(":")
       //ip port  soTimeout  bufferSize   clientId:客服端名称
-      val leaderConsumer = new SimpleConsumer(hostAndPort(0), hostAndPort(1).toInt, 100000, 10000, "OffsetLookup")
+      val leaderConsumer = new SimpleConsumer(hostAndPort(0), hostAndPort(1).toInt,
+        100000, 10000, "OffsetLookup")
       //该请求包含所有的元信息，主要拿到 分区 -》 主节点
       val response = leaderConsumer.send(request)
       val topicMetadataOption = response.topicsMetadata.headOption
@@ -124,6 +128,7 @@ object KafkaStreaming {
     } else {
       //直接创建到Kafka的连接
       logger.warn("直接创建Kafka连接")
+
       textKafkaDStream = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParam, Set(sourceTopic))
     }
 

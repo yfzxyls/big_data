@@ -511,6 +511,8 @@ public class HBaseUtil {
         try {
             table = ConnectionFactory.createConnection(conf).getTable(TableName.valueOf(tableName));
             Scan scan = new Scan();
+//            scan.setCaching(10);
+//            scan.setBatch(10);
             if (maxVersion >= 0) {
                 scan.setMaxVersions(maxVersion);
             }

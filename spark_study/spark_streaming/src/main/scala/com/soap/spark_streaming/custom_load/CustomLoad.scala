@@ -3,8 +3,6 @@ package com.soap.spark_streaming.custom_load
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.Socket
 import java.nio.charset.StandardCharsets
-
-import com.soap.spark_streaming.world_count.WorldCount.loadFromHDFS
 import org.apache.spark.SparkConf
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.{Seconds, StreamingContext}
