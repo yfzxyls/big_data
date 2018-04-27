@@ -6,10 +6,12 @@
 
     <groupId>com.soap</groupId>
     <artifactId>log_analyse</artifactId>
-    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <modules>
         <module>data_producer</module>
+        <module>log_analyse_spark/common</module>
+        <module>log_analyse_spark/data-processing</module>
     </modules>
 
 
