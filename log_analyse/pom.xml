@@ -10,8 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>data_producer</module>
-        <module>log_analyse_spark/common</module>
-        <module>log_analyse_spark/data-processing</module>
+        <module>log_analyse_spark</module>
     </modules>
 
 

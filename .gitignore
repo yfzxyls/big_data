@@ -36,3 +36,5 @@ commerce/metastore_db/
 spark-warehouse/person1/_SUCCESS
 
 metastore_db/
+
+data-processing/checkpoint/behavior/

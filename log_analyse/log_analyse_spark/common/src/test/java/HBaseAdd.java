@@ -1,7 +1,7 @@
-import com.atguigu.model.UserCityStatModel;
-import com.atguigu.service.BehaviorStatService;
-import com.atguigu.utils.PropertiesUtil;
-import com.atguigu.utils.StringUtil;
+import com.soap.model.UserCityStatModel;
+import com.soap.service.BehaviorStatService;
+import com.soap.utils.PropertiesUtil;
+import com.soap.utils.StringUtil;
 
 import java.io.IOException;
 import java.util.Properties;

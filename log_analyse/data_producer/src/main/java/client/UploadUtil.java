@@ -32,7 +32,7 @@ public class UploadUtil {
 			//设置请求的头信息,设置内容类型为JSON
 			conn.setRequestProperty("Content-Type", "application/json");
 
-			System.out.println("upload" + json);
+			System.out.println(json);
 
 			//输出流
 			OutputStream out = conn.getOutputStream();
@@ -40,7 +40,7 @@ public class UploadUtil {
 			out.flush();
 			out.close();
 			int code = conn.getResponseCode();
-			System.out.println(code);
+//			System.out.println(code);
 		}
 		catch (Exception e){
 			e.printStackTrace();
