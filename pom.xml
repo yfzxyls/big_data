@@ -15,5 +15,6 @@
         <module>hbase</module>
         <module>weibo</module>
         <module>zookeeper</module>
+        <module>storm</module>
     </modules>
 </project>
