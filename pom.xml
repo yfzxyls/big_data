@@ -16,5 +16,6 @@
         <module>weibo</module>
         <module>zookeeper</module>
         <module>storm</module>
+        <module>data_structure</module>
     </modules>
 </project>
