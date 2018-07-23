@@ -18,7 +18,7 @@ object dfs {
 
     var i = 0
     for (i <- 1 to n){
-      if(book[i] == 0){}
+      if(book(i) == 0){}
     }
 
   }
