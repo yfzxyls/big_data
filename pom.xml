@@ -17,5 +17,7 @@
         <module>zookeeper</module>
         <module>storm</module>
         <module>data_structure</module>
+        <module>flink</module>
+        <module>common</module>
     </modules>
 </project>

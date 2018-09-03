@@ -1,4 +1,4 @@
-package statistics
+package com.soapy.spark.ml
 
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.mllib.linalg.Vectors
@@ -19,24 +19,26 @@ object Stats {
 
     val vect = data.map(f => Vectors.dense(f))
 
-    val stat = Statistics.colStats(vect)
-
-
     //按照列进行计算
-    println(stat.max)
-    println(stat.min)
-    //平均值
-    println(stat.mean)
-    //方差
-    println(stat.variance)
+    val colStat = Statistics.colStats(vect)
 
-    println(stat.count)
+    println(colStat.max)
+    println(colStat.min)
+    //平均值
+    println(colStat.mean)
+    //方差
+    println(colStat.variance)
+
+    println(colStat.count)
 
     //统计不为0 的个数
-    println(stat.numNonzeros)
+    println(colStat.numNonzeros)
 
-    println(stat.normL1)
-    println(stat.normL2)
+    println(colStat.normL1)
+    println(colStat.normL2)
+
+
+
   }
 
 }
