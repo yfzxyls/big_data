@@ -1,3 +1,4 @@
+package com.soap.storm;
 
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -20,11 +21,12 @@ public class SentenceSpout  extends BaseRichSpout {
     private SpoutOutputCollector collector;
 
     private static final String[] SENTENCES = {
-            "hadoop yarn mapreduce spark",
-            "flume hadoop hive spark",
-            "zookeeper yarn spark storm",
-            "storm yarn mapreduce kafka",
-            "kafka flume storm spark" };
+            "hadoop",
+//            "flume hadoop hive spark",
+//            "zookeeper yarn spark storm",
+//            "storm yarn mapreduce kafka",
+//            "kafka flume storm spark"
+    };
 
     /**
      * 用于指定只针对本组件的一些特殊配置
@@ -63,7 +65,7 @@ public class SentenceSpout  extends BaseRichSpout {
         this.collector.emit(values,msgId);
         this.pending.put(msgId,values);
         try {
-            Thread.sleep(10000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

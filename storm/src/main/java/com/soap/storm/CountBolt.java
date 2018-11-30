@@ -1,4 +1,4 @@
-
+package com.soap.storm;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -13,12 +13,15 @@ import java.util.Map;
 
 public class CountBolt extends BaseRichBolt {
 
+
+
     // 发射器
     private OutputCollector collector;
     // 为了计数
     private Map<String, Integer> counts;
 
     public void prepare(Map arg0, TopologyContext arg1, OutputCollector arg2) {
+        System.out.println("初始化、、"+Thread.currentThread().getName());
         this.collector = arg2;
         this.counts = new HashMap<String, Integer>();
     }
@@ -35,12 +38,12 @@ public class CountBolt extends BaseRichBolt {
      */
     public void execute(Tuple input) {
         String word = input.getStringByField("word");
-
         int count = 1;
         // 如果这个单词已经存在，则取出count再加一
         if (counts.containsKey(word)) {
             count = counts.get(word) + 1;
         }
+        System.out.println("CountBolt:"+Thread.currentThread().getName() + "，count :"+counts.size());
         counts.put(word, count);
         this.collector.emit(new Values(word, count));
     }
