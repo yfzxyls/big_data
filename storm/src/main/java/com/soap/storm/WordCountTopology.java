@@ -37,6 +37,13 @@ public class WordCountTopology {
                 .shuffleGrouping(SPOUT_ID);
         builder.setBolt(COUNT_BOLT, new CountBolt(),3)
                 .shuffleGrouping(SPLIT_BOLT).setNumTasks(1);
+
+        /**
+         * 分组
+         * 1.shuffle 随机分组，数据随机分发到下游，均衡
+         * 2.field 按指定的字段分组，保证相同字段的数据进入同一个bolt
+         * 3.
+         */
 //                .fieldsGrouping(SPLIT_BOLT, new Fields("word")).setNumTasks(1);
         // 全局分组，所有tuple发射到一个printbolt，一般是id最小的那一个
         builder.setBolt(PRINT_BOLT, new PrintBolt()).globalGrouping(COUNT_BOLT);
