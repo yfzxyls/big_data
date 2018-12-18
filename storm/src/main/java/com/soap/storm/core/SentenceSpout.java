@@ -1,4 +1,4 @@
-package com.soap.storm;
+package com.soap.storm.core;
 
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -22,7 +22,7 @@ public class SentenceSpout  extends BaseRichSpout {
 
     private static final String[] SENTENCES = {
             "hadoop",
-//            "flume hadoop hive spark",
+            "flume hadoop hive spark",
 //            "zookeeper yarn spark storm",
 //            "storm yarn mapreduce kafka",
 //            "kafka flume storm spark"

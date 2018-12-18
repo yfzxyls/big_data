@@ -1,4 +1,4 @@
-package com.soap.storm;
+package com.soap.storm.core;
 
 import org.apache.storm.generated.GlobalStreamId;
 import org.apache.storm.grouping.CustomStreamGrouping;

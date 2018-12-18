@@ -1,4 +1,4 @@
-package com.soap.storm;
+package com.soap.storm.core;
 
 import org.apache.storm.shade.org.apache.commons.lang.StringUtils;
 import org.apache.storm.task.OutputCollector;

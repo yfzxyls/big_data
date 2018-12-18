@@ -7,19 +7,19 @@
 
 
 1.指定数据源：自定义一个Spout 发射为sentence
-	public class com.soap.storm.SentenceSpout  extends BaseRichSpout {}
+	public class com.soap.storm.core.SentenceSpout  extends BaseRichSpout {}
 	输出："hadoop yarn mapreduce spark"
 
 2.对数据进行切分：从 sentence 获取数据，使用空格切分，然后发射为 word
-	public class com.soap.storm.SplitBolt implements IRichBolt{}
+	public class com.soap.storm.core.SplitBolt implements IRichBolt{}
 	输出：“storm” “yarn” “mapreduce” “kafka”
 
 3.进行单词统计：从 word 获取然后统计发射为 word，count
-	public class com.soap.storm.CountBolt extends BaseRichBolt {}
+	public class com.soap.storm.core.CountBolt extends BaseRichBolt {}
 	输出： “storm”：1， “yarn”：1，“mapreduce”：1，“kafka” ：1
 
 4.打印输出：获取word count 打印
-	public class com.soap.storm.PrintBolt extends BaseRichBolt {}
+	public class com.soap.storm.core.PrintBolt extends BaseRichBolt {}
 
 5.组装 Topology 任务
-	public class com.soap.storm.WordCountTopology {}
+	public class com.soap.storm.core.WordCountTopology {}

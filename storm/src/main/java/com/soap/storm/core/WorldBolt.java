@@ -1,4 +1,4 @@
-package com.soap.storm;
+package com.soap.storm.core;
 
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.OutputCollector;

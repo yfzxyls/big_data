@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class LinkedBlockingQueueTest {
     BlockingQueue<Integer> blockingQueue = new LinkedBlockingQueue();
 
-    @Test
+//    @Test
     public void test() {
 
 
