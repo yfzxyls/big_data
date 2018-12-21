@@ -10,19 +10,25 @@ import java.util.Map;
 
 public class PrintBolt extends BaseRichBolt {
 
-    public void prepare(Map arg0, TopologyContext arg1, OutputCollector arg2) {
+    OutputCollector collector = null;
 
+    @Override
+    public void prepare(Map arg0, TopologyContext arg1, OutputCollector arg2) {
+        collector = arg2;
     }
 
     /**
      * 打印到控制台
      */
+    @Override
     public void execute(Tuple input) {
         String word = input.getStringByField("word");
         int count = input.getIntegerByField("count");
         System.out.println(word + " ：" + count);
+        collector.ack(input);
     }
 
+    @Override
     public void declareOutputFields(OutputFieldsDeclarer arg0) {
 
     }

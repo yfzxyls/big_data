@@ -10,10 +10,12 @@ import java.util.List;
  * @author yangfuzhao on 2018/11/30.
  */
 public class MyGroup implements CustomStreamGrouping {
+    @Override
     public void prepare(WorkerTopologyContext context, GlobalStreamId stream, List<Integer> targetTasks) {
 
     }
 
+    @Override
     public List<Integer> chooseTasks(int taskId, List<Object> values) {
         return null;
     }

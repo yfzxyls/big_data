@@ -9,6 +9,7 @@ import org.apache.storm.trident.tuple.TridentTuple;
  */
 public class MyBaseFunc extends BaseFunction {
 
+    @Override
     public void execute(TridentTuple tuple, TridentCollector collector) {
 
     }

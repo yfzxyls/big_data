@@ -13,13 +13,18 @@ import org.apache.storm.tuple.Values;
 
 import java.util.Map;
 
+/**
+ * 自动 ack
+ */
 public class SplitBoltBase implements IBasicBolt {
 
 
+    @Override
     public void prepare(Map stormConf, TopologyContext context) {
 
     }
 
+    @Override
     public void execute(Tuple input, BasicOutputCollector collector) {
         // 获取key value对后，取出value值
         String values = input.getStringByField("sentence");
@@ -30,11 +35,10 @@ public class SplitBoltBase implements IBasicBolt {
                 // 向后面的组件发射封装好的tuple
                 collector.emit(new Values(value));
             }
-            //自动ack
-//            collector.ack(input);
         }
     }
 
+    @Override
     public void cleanup() {
 
     }
@@ -42,11 +46,12 @@ public class SplitBoltBase implements IBasicBolt {
     /**
      * 设置key名称，接受时需相同
      */
+    @Override
     public void declareOutputFields(OutputFieldsDeclarer arg0) {
         arg0.declare(new Fields("word"));
     }
 
-
+    @Override
     public Map<String, Object> getComponentConfiguration() {
         return null;
     }

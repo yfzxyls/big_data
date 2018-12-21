@@ -34,16 +34,18 @@ public class TridentTp {
 
     public static void main(String[] args) {
 
-//        wordCount();
+        wordCount();
 //        sum();
-        merge();
+//        merge();
     }
 
 
     public static void wordCount() {
-        SentenceBatchSpout spout = new SentenceBatchSpout(new Fields("sentence"), 1,
-                new Values("the cow jumped over the moon"),
-                new Values("the hadoop storm flink spark")
+        SentenceBatchSpout spout = new SentenceBatchSpout(new Fields("sentence"), 2,
+                new Values("the cow spark jumped over the moon"),
+                new Values("the  storm flink spark"),
+                new Values("the flink hdfs flink kafka spark"),
+                new Values("the spout bolt count spark")
         );
         spout.setCycle(true);
 

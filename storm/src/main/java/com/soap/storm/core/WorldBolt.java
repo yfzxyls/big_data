@@ -20,16 +20,16 @@ public class WorldBolt extends BaseRichBolt {
 
     private SpoutOutputCollector collector;
 
+    @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
-        System.out.println("初始化bolt");
+//        System.out.println("初始化bolt");
     }
 
+    @Override
     public void execute(Tuple input) {
-
-
-
     }
 
+    @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
 
     }
