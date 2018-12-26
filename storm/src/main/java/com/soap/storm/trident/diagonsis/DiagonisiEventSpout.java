@@ -1,6 +1,5 @@
-package com.soap.storm.trident;
+package com.soap.storm.trident.diagonsis;
 
-import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.trident.spout.ITridentSpout;
 import org.apache.storm.tuple.Fields;
@@ -12,21 +11,19 @@ import java.util.Map;
  */
 public class DiagonisiEventSpout implements ITridentSpout<Long> {
 
-    SpoutOutputCollector collector;
-
     BatchCoordinator<Long> coordinator = new DefaultCoordinator();
-
+    Emitter<Long> emitter = new DiagnosisEventEmitter();
 
 
     @Override
     public BatchCoordinator<Long> getCoordinator(String txStateId, Map conf, TopologyContext context) {
-        return null;
+        return coordinator;
     }
 
     @Override
     public Emitter<Long> getEmitter(String txStateId, Map conf, TopologyContext context) {
 
-        return null;
+        return emitter;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.soap.storm.trident;
+package com.soap.storm.trident.diagonsis;
 
 import org.apache.storm.trident.spout.ITridentSpout;
 import org.slf4j.Logger;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * @author yangfuzhao on 2018/12/24.
  */
-public class DefaultCoordinator implements ITridentSpout.BatchCoordinator<Long>  {
+public class DefaultCoordinator implements ITridentSpout.BatchCoordinator<Long>, Serializable {
 
 
     private static final long serialVersionUID = 8255927869250062503L;

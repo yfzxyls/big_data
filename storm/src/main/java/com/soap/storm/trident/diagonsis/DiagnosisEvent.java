@@ -1,4 +1,4 @@
-package com.soap.storm.trident;
+package com.soap.storm.trident.diagonsis;
 
 import java.io.Serializable;
 
@@ -18,5 +18,8 @@ public class DiagnosisEvent implements Serializable {
         this.lat = lat;
         this.lng = lng;
         this.diagnosisCode = diagnosisCode;
+    }
+
+    public DiagnosisEvent() {
     }
 }
