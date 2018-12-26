@@ -1,11 +1,15 @@
 package com.soap.storm.trident;
 
+import com.soap.storm.trident.diagonsis.OutbreakTrendBackingMap;
+import com.soap.storm.trident.diagonsis.OutbreakTrendFactory;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.trident.Stream;
 import org.apache.storm.trident.TridentTopology;
 import org.apache.storm.trident.operation.builtin.Count;
 import org.apache.storm.trident.operation.builtin.Sum;
+import org.apache.storm.trident.state.map.NonTransactionalMap;
+import org.apache.storm.trident.testing.LRUMemoryMapState;
 import org.apache.storm.trident.testing.Split;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
@@ -27,6 +31,16 @@ public class TridentTp {
      * 实现有且只有一次消费
      * 1、为每个batch创建唯一的ID,称为事务ID。如果一个batch重试就会有完全相同的ID
      * 2、batch之间有序执行。
+     *
+     *
+     * trident spout 事务关系
+     *
+     * spout类型    batch 可能有重复数据   batch内容不会变化
+     * 非事务型        ❌                       ❌
+     * 非透明型        ✅                       ❌
+     * 事务型          ✅                       ✅
+     *
+     *
      *
      * @param args
      */
@@ -54,7 +68,9 @@ public class TridentTp {
         topology.newStream("spout", spout)
                 .each(new Fields("sentence"), new Split(), new Fields("word"))
                 .groupBy(new Fields("word"))
-                .aggregate(new Count(), new Fields("count"))
+                .persistentAggregate(new OpaqueMapStateFactory(),new Count(), new Fields("count"))
+                .newValuesStream()
+//                .aggregate(new Count(), new Fields("count"))
                 .filter(new FilterFunc())
                 .each(new Fields("word", "count"), new PrintFunc(), new Fields())
                 //.persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))

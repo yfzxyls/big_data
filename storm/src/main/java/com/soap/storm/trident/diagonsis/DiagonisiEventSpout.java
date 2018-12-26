@@ -1,6 +1,5 @@
 package com.soap.storm.trident;
 
-import org.apache.storm.kafka.trident.DefaultCoordinator;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.trident.spout.ITridentSpout;
@@ -15,7 +14,7 @@ public class DiagonisiEventSpout implements ITridentSpout<Long> {
 
     SpoutOutputCollector collector;
 
-    BatchCoordinator<Long> coordinator ;//= new DefaultCoordinator();
+    BatchCoordinator<Long> coordinator = new DefaultCoordinator();
 
 
 
@@ -39,4 +38,8 @@ public class DiagonisiEventSpout implements ITridentSpout<Long> {
     public Fields getOutputFields() {
         return new Fields("event");
     }
+
+
+
+
 }
