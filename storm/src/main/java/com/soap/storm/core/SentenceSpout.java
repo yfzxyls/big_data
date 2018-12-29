@@ -35,8 +35,8 @@ public class SentenceSpout extends BaseRichSpout {
     private static final String[] SENTENCES = {
 //            "hadoop",
             "flume hadoop hive spark",
-//            "zookeeper yarn spark storm",
-//            "storm yarn mapreduce kafka",
+            "zookeeper yarn spark storm",
+            "storm yarn mapreduce kafka",
 //            "kafka flume storm spark"
     };
 
@@ -80,7 +80,7 @@ public class SentenceSpout extends BaseRichSpout {
         this.collector.emit(values, msgId);
         this.pending.put(msgId, values);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
