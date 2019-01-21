@@ -1,13 +1,13 @@
-package com.soap.flink
+package com.soap.flink.source
 
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.commons.lang3.StringUtils
-import org.apache.flink.api.common.restartstrategy.RestartStrategies
-import org.apache.flink.api.common.restartstrategy.RestartStrategies.{FixedDelayRestartStrategyConfiguration, RestartStrategyConfiguration}
-import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
-import org.apache.flink.streaming.api.windowing.time.Time
+import org.apache.flink.api.scala._
 
+/**
+  * @author yangfuzhao on 2019/1/3. 
+  */
 object SocketSource extends App with LazyLogging {
 
   /**
@@ -26,7 +26,7 @@ object SocketSource extends App with LazyLogging {
     //    env.setRestartStrategy(RestartStrategies.fixedDelayRestart(1,10000))
 
     // get input data by connecting to the socket
-    val text = env.socketTextStream("localhost", 9999, '\n')
+    val text = env.socketTextStream("localhost", 9999,',',100000)
 
     logger.debug("=================>>>>>>>>>>>>aaaa")
 

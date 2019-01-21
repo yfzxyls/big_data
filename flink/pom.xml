@@ -50,6 +50,19 @@
             <version>${flink.version}</version>
         </dependency>
 
+        <!--mysql jdbc-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.40</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-jdbc</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+
         <!-- log -->
         <dependency>
             <groupId>com.typesafe.scala-logging</groupId>
