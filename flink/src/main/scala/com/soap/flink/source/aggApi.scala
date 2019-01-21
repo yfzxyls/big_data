@@ -19,6 +19,7 @@ object aggApi extends App {
 //    dataSet.min(1).print()
 //    dataSet.min(0).print()
 //    dataSet.minBy(0).print()
+    
 
 
     dataSet.max(0).print()
