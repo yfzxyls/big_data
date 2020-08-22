@@ -1,1 +1,47 @@
-<mxfile host="app.diagrams.net" modified="2020-08-22T10:33:45.206Z" agent="5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36" etag="0kGZMBcQKw76F-E-WvZT" version="13.6.4" type="github"><diagram id="-bwUwgzcoNaK2-YZ4em_" name="Page-1">5Vlbj9o6EP41kXYfFuVCAjwW2LaqthI6qLfzZhKTuOvEqeMUcn59x4mTrAlhoSxbdKpFiz2+ZPzNNxcHw5nF23ccpdFHFmBq2GawNZy5YduToQf/paCoBK41qQQhJ0ElslrBkvyHldBU0pwEONMmCsaoIKku9FmSYF9oMsQ52+jT1ozqT01RiDuCpY9oV/qFBCKqpGN71MrfYxJG9ZMtT50vRvVkdZIsQgHbPBE594Yz44yJqhVvZ5hK7GpcqnVve0YbxThOxDELHmf/TPm/iK4+b358mN59FvOJf6d2+Ylorg78lpLkEUSzCPuPKSOweaW+KGpMsg2JKUqgN41ETEFoQdOPCA0eUMFyqU4mkP9Y96YcZ2DZRa2rtSP6iCRdTJDCMi4UC2wpUPphLvC29+BWAyfQELMYC17AlHqBoyygKFh3N609XVfJoie2dMZKiBSHwmbrFmZoKKRPQN3uoG7YHpVAZSlKNLC9H7kkyNRnlHHDeQODPFzdSH3hA483teatoVADpifiLiuRlIssJ93qYxt1VDk6NM1mcAWGCznLk+BOfyi6AZyaZ/W1zYFp3bZ6QyuU3wvYFXwlWHAWchR/EoRm9aEBw+rc1dQj+fZ7VOn3gi5/FF/sLl8aDml88S7Fl3EHEhxAlFJdxkXEQpYget9Kp6UFcaD8qp3zwFiqEPyOhSgUgigXTMcXIOPFV7W+7HyTnYFbd+fbp4PzQvUqXaWCpxlBOUXGcu7jA/NclQUQD/Gh/Ub7jcoxRYL81JV7cYu5vR6ecrzXwfe7nWE79kr+Ne6pD6LJauR7umOvUUxoUU/xUJyWg44zhO8YJ5R1pH1RYzIwU9F15lOiFTxivfY9L+hu43OMBP7AVmXp0BsNGnEJXV+MiFAqm1B+IDj7dBMRgZcpKqm0gf11cv9+rLAP5pqdVON2Q4dl7Qkdw0tFjlGHhyQrgeM4JknYgZFHLF7l2Z8D0Bo/i+C+XH0xAJ0OgEvADknwauK+wwnmSADhryVxbXeyVH8ic+xXTWSW3cHoVTNZm7y+abnrZTOZc2Qm847MZJZzZipTSxdVNd+4mjXS6GHtOlGl2KK5Azy1fKPGGWTo+tb/MUn2neXF1bhkpmbJmoQ5x+2tsMweJ2XsK4LjKpQ40iaT8chDqLvN98N10yDDYpmgNIuYWEJ4BHtlN5lq3B620XHS3dJBC9MXKx96YmFdf+2EtD13fXvkdFOeZV4q5Xl/RZC7opvAVfAQqvyB++xVwPZesZKd/NnSy3iVlwjWkaXX6MjSyzuz8jqvWu6+nS1wtteMD2iFqQ49oiRMoO0DYhhccCpZTnxE36iBmARBZWX5Khatyv0k+GV+Lw/jTg13fshN1Gt3tdhorhjPGmpy0H3Mga05T/1y6MyKt6ZHvetQ34Ct15AgTyt1odu+wq+mt7+DOPe/AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2020-08-22T10:33:52.844Z" agent="5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36" etag="yGYvj6Jw2xq0PfUrF0iS" version="13.6.4" type="github">
+  <diagram id="-bwUwgzcoNaK2-YZ4em_" name="Page-1">
+    <mxGraphModel dx="946" dy="519" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-1" value="Flink Checkpoint" style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=20;" parent="1" vertex="1">
+          <mxGeometry x="130" y="30" width="550" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-2" value="&lt;span style=&quot;color: rgb(50 , 50 , 50) ; font-size: 13px ; font-weight: 400 ; background-color: rgba(255 , 255 , 255 , 0.01)&quot;&gt;PackagedProgramUtils&lt;/span&gt;" style="swimlane;html=1;startSize=20;" parent="kCRBrZalbVwqJB-VtD9c-1" vertex="1">
+          <mxGeometry y="20" width="230" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="kCRBrZalbVwqJB-VtD9c-2" source="kCRBrZalbVwqJB-VtD9c-5" target="kCRBrZalbVwqJB-VtD9c-7" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-5" value="&lt;pre style=&quot;background-color: #2b2b2b ; color: #a9b7c6 ; font-family: &amp;#34;menlo&amp;#34; ; font-size: 9.0pt&quot;&gt;&lt;span style=&quot;color: #ffc66d&quot;&gt;createJobGraph&lt;/span&gt;&lt;/pre&gt;" style="shape=delay;whiteSpace=wrap;html=1;" parent="kCRBrZalbVwqJB-VtD9c-2" vertex="1">
+          <mxGeometry x="30" y="50" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-7" value="is streming" style="rhombus;whiteSpace=wrap;html=1;" parent="kCRBrZalbVwqJB-VtD9c-2" vertex="1">
+          <mxGeometry x="180" y="50" width="50" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-3" value="StreamingJobGraphGenerator" style="swimlane;html=1;startSize=20;" parent="kCRBrZalbVwqJB-VtD9c-1" vertex="1">
+          <mxGeometry x="230" y="20" width="320" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="kCRBrZalbVwqJB-VtD9c-3" source="kCRBrZalbVwqJB-VtD9c-6" target="kCRBrZalbVwqJB-VtD9c-13" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="117" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-13" value="&lt;pre style=&quot;background-color: #2b2b2b ; color: #a9b7c6 ; font-family: &amp;#34;menlo&amp;#34; ; font-size: 9.0pt&quot;&gt;&lt;pre style=&quot;font-family: &amp;#34;menlo&amp;#34; ; font-size: 9pt&quot;&gt;&lt;span style=&quot;color: #ffc66d&quot;&gt;configureCheckpointing&lt;/span&gt;&lt;/pre&gt;&lt;pre style=&quot;font-family: &amp;#34;menlo&amp;#34; ; font-size: 9pt&quot;&gt;&lt;pre style=&quot;font-family: &amp;#34;menlo&amp;#34; ; font-size: 9pt&quot;&gt;&lt;span style=&quot;color: #9876aa&quot;&gt;jobGraph&lt;/span&gt;.setSnapshotSettings(settings)&lt;/pre&gt;&lt;/pre&gt;&lt;/pre&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="kCRBrZalbVwqJB-VtD9c-3" vertex="1">
+          <mxGeometry x="37" y="130" width="273" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-6" value="&lt;pre style=&quot;background-color: #2b2b2b ; color: #a9b7c6 ; font-family: &amp;#34;menlo&amp;#34; ; font-size: 9.0pt&quot;&gt;&lt;span style=&quot;color: #ffc66d&quot;&gt;createJobGraph&lt;/span&gt;&lt;/pre&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="kCRBrZalbVwqJB-VtD9c-3" vertex="1">
+          <mxGeometry x="110.5" y="50" width="126" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="kCRBrZalbVwqJB-VtD9c-1" source="kCRBrZalbVwqJB-VtD9c-7" target="kCRBrZalbVwqJB-VtD9c-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kCRBrZalbVwqJB-VtD9c-11" value="yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="kCRBrZalbVwqJB-VtD9c-9" vertex="1" connectable="0">
+          <mxGeometry x="0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="-1" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
